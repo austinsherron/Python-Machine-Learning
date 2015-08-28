@@ -15,6 +15,8 @@ and implements methods that generalize to all other regressors.
 ```Regress``` also implements a ```__call__``` method that provides
 syntatic sugar for ```train``` and ```predict``` methods.
 
+###### __call__
+
 ```python
 def __call__(self, *args, **kwargs)
 ```
@@ -25,7 +27,48 @@ To train: ```regressor(X, Y, **kwargs)``` == ```regressor.train(X, Y, **kwargs)`
 The first and second args should be numpy arrays, other arguments can be keyword args 
 as necessary.
 
-Args: this method takes any number of args or keyword args, the first two being numpy arrays.
+Args: 
+
+this method takes any number of args or keyword args, the first two being numpy arrays.
+
+###### mae
+
+```python
+def mae(self, X, Y)
+```
+This method computes the mean absolute error of predictor object on test data X and Y.
+
+Args:
+
+X = N x M numpy array that contains N data points with M features
+Y = 1 x N numpy array that contains values that correspond to the data points in X
+
+###### mse
+
+```python
+	def mse(self, X, Y):
+```
+This method computes the mean squared error of predictor object
+on test data X and Y. 
+
+Args:
+
+X = N x M numpy array that contains N data points with M features
+Y = 1 x N numpy array that contains values that correspond to the data points in X
+
+
+###### rmse
+
+```python
+def rmse(self, X, Y):
+```
+This method computes the root mean squared error of predictor object
+on test data X and Y. 
+
+Args:
+
+X = N x M numpy array that contains N data points with M features
+Y = 1 x N numpy array that contains values that correspond to the data points in X
 
 
 ## Todos
