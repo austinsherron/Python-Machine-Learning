@@ -4,6 +4,22 @@ These machine learning algorithms have been adapted from
 algorithms written in Matlab by Professor [Alex Ihler](http://www.ics.uci.edu/~ihler/). 
 
 
+## Documentation
+
+### Regressors
+
+#### Regress
+
+```Regress``` is the abstract base class for all regressors, 
+and implements methods that generalize to all other regressors. 
+```Regress``` also implements a ```__call__``` method that provides
+syntatic sugar for ```train``` and ```predict``` methods.
+
+```python
+def __call__(self, *args, **kwargs):
+```
+
+
 ## Todos
 
 #### General
@@ -45,13 +61,13 @@ algorithms written in Matlab by Professor [Alex Ihler](http://www.ics.uci.edu/~i
 
 ## Potential Bugs
 
-* Y (class labels/) is flat 1 x N array
+* ```Y``` (class labels/data values) is flat 1 x N array
 * generally use flat array instead of one row arrays ([0] vs [[0]]) or column vectors
 * predictions are returned as columns
 * python indices start at 0, matlab indices start at 1; inconsistent use of both in these tools 
 * ~~FIXED(?): some classifiers can't be retrained, must instantiate new object~~
 * ~~FIXED(?): train methods don't have default args~~ 
-* .T notation doesn't work on flat arrays
+* ```.T``` notation doesn't work on flat arrays
 
 
 
