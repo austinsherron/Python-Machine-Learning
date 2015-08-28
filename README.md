@@ -53,6 +53,7 @@ This method computes the mean squared error of predictor object on test data X a
 ###### Args
 
 X = N x M numpy array that contains N data points with M features
+<br>
 Y = 1 x N numpy array that contains values that correspond to the data points in X
 
 ##### rmse
@@ -65,6 +66,7 @@ This method computes the root mean squared error of predictor object on test dat
 ###### Args
 
 X = N x M numpy array that contains N data points with M features
+<br>
 Y = 1 x N numpy array that contains values that correspond to the data points in X
 
 ####
@@ -106,7 +108,7 @@ Y = 1 x N numpy array that contains values that correspond to the data points in
 * ~~fix indentation in regressors~~
 * arg error checking
 * modularize ```__dectree_train``` in ```TreeClassifer```
-* ~~): make sure inheritance is optimally utilized while maintaing clarity (added ```to_1_of_K``` to ```Classify```)~~
+* ~~make sure inheritance is optimally utilized while maintaing clarity (added ```to_1_of_K``` to ```Classify```)~~
 
 
 ## Potential Bugs
