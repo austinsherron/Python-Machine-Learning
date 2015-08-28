@@ -16,8 +16,16 @@ and implements methods that generalize to all other regressors.
 syntatic sugar for ```train``` and ```predict``` methods.
 
 ```python
-def __call__(self, *args, **kwargs):
+def __call__(self, *args, **kwargs)
 ```
+
+To predict: ```regressor(X)``` == ```regressor.predict(X)```. The first arg 
+should be a numpy array, other arguments can be keyword args as necessary.
+To train: ```regressor(X, Y, **kwargs)``` == ```regressor.train(X, Y, **kwargs)```.
+The first and second args should be numpy arrays, other arguments can be keyword args 
+as necessary.
+
+Args: this method takes any number of args or keyword args, the first two being numpy arrays.
 
 
 ## Todos
