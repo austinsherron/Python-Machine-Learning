@@ -20,7 +20,6 @@ syntatic sugar for ```train``` and ```predict``` methods.
 ```python
 def __call__(self, *args, **kwargs)
 ```
-
 To predict: ```regressor(X)``` == ```regressor.predict(X)```. The first arg 
 should be a numpy array, other arguments can be keyword args as necessary.
 To train: ```regressor(X, Y, **kwargs)``` == ```regressor.train(X, Y, **kwargs)```.
@@ -41,12 +40,13 @@ This method computes the mean absolute error of predictor object on test data X 
 ###### Args
 
 X = N x M numpy array that contains N data points with M features
+<br>
 Y = 1 x N numpy array that contains values that correspond to the data points in X
 
 ##### mse
 
 ```python
-	def mse(self, X, Y):
+def mse(self, X, Y)
 ```
 This method computes the mean squared error of predictor object on test data X and Y. 
 
@@ -58,7 +58,7 @@ Y = 1 x N numpy array that contains values that correspond to the data points in
 ##### rmse
 
 ```python
-def rmse(self, X, Y):
+def rmse(self, X, Y)
 ```
 This method computes the root mean squared error of predictor object on test data X and Y. 
 
@@ -66,6 +66,8 @@ This method computes the root mean squared error of predictor object on test dat
 
 X = N x M numpy array that contains N data points with M features
 Y = 1 x N numpy array that contains values that correspond to the data points in X
+
+####
 
 
 ## Todos
@@ -79,21 +81,21 @@ Y = 1 x N numpy array that contains values that correspond to the data points in
 * make sure all methods implemented/retest
 * implement ```nnetClassify``` 
 * test ```TreeClassify```training options 
-* ~~DONE: change ```range``` to ```permutation``` (```grep 'np.random.permutation*'```) and retest~~
+* ~~change ```range``` to ```permutation``` (```grep 'np.random.permutation*'```) and retest~~
 * add plotting 
 * fix ```LogisticRegress```
 * fix ```BaggedClassify``` train method
-* ~~DONE: fix ```BaggedClassify.__setitem__```~~	
+* ~~fix ```BaggedClassify.__setitem__```~~	
 
 #### Next Steps
 
-* ~~DONE: finish and test ```baggedClassify```~~
+* ~~finish and test ```baggedClassify```~~
 * implement and test ```logisticMseClassify```
 * implement and test ```nnetClassify```
-* ~~DONE: implement and test ```knnRegress```~~
-* ~~DONE: implement and test ```linearRegress```~~
-* ~~DONE: implement and test ```treeRegress```~~
-* ~~DONE: implement and test ```baggedRegress```~~
+* ~~implement and test ```knnRegress```~~
+* ~~implement and test ```linearRegress```~~
+* ~~implement and test ```treeRegress```~~
+* ~~implement and test ```baggedRegress```~~
 * implement and test ```nnetRegress```
 
 #### Low Priority
@@ -101,10 +103,10 @@ Y = 1 x N numpy array that contains values that correspond to the data points in
 * add Ihler's comments 
 * execute comprehensive tests
 * ensure consistency of doc strings
-* ~~DONE: fix indentation in regressors~~
+* ~~fix indentation in regressors~~
 * arg error checking
 * modularize ```__dectree_train``` in ```TreeClassifer```
-* ~~DONE(?): make sure inheritance is optimally utilized while maintaing clarity (added ```to_1_of_K``` to ```Classify```)~~
+* ~~): make sure inheritance is optimally utilized while maintaing clarity (added ```to_1_of_K``` to ```Classify```)~~
 
 
 ## Potential Bugs
@@ -113,8 +115,8 @@ Y = 1 x N numpy array that contains values that correspond to the data points in
 * generally use flat array instead of one row arrays ([0] vs [[0]]) or column vectors
 * predictions are returned as columns
 * python indices start at 0, matlab indices start at 1; inconsistent use of both in these tools 
-* ~~FIXED(?): some classifiers can't be retrained, must instantiate new object~~
-* ~~FIXED(?): train methods don't have default args~~ 
+* ~~some classifiers can't be retrained, must instantiate new object~~
+* ~~train methods don't have default args~~ 
 * ```.T``` notation doesn't work on flat arrays
 
 
