@@ -24,12 +24,18 @@ class KNNClassify(BaseClassify):
 
 	def __init__(self, X=None, Y=None, K=1, alpha=0):
 		"""
-		Constructor for KNNClassifier.  X and Y must both be numpy arrays:
-		X is an N x M array of N training instances with M features.  Y is a 1 x N 
-		array that contains the classes that correspond to instances in X.
-		K is an int that sets the number of neighbors to used for predictions.
-		alpha is a weighted average coefficient (Gaussian weighting; 
-		alphs = 0 -> simple average).
+		Constructor for KNNClassifier.  
+
+		Parameters
+		----------
+		X : N x M numpy array 
+			N = number of training instances; M = number of features.  
+		Y : 1 x N numpy array 
+			Contains class labels that correspond to instances in X.
+		K : int 
+			Sets the number of neighbors to used for predictions.
+		alpha : scalar (int or float) 
+			Weighted average coefficient (Gaussian weighting; alpha = 0 -> simple average).
 		"""
 		self.K = K
 		self.X_train = []
@@ -62,7 +68,7 @@ class KNNClassify(BaseClassify):
 		"""
 		This method "trains" the KNNClassifier: it stores the input data and 
 		determines the number of possible classes of data.  Refer to constructor
-		docstring for descriptions of X and Y.
+		doc string for descriptions of X and Y.
 		"""
 		self.X_train = np.asarray(X)
 		self.Y_train = np.asarray(Y)
@@ -72,8 +78,11 @@ class KNNClassify(BaseClassify):
 	def predict_soft(self, X):
 		"""
 		This method makes a "soft" nearest-neighbor prediction on test data.
-		X is an N x M numpy array of N testing instances with M features.  N doesn't
-		necessarily have to be the same as N in X_train.
+
+		Parameters
+		----------
+		X : N x M numpy array 
+			N = number of testing instances; M = number of features.  
 		"""
 		tr_r,tr_c = np.asmatrix(self.X_train).shape
 		te_r,te_c = np.asmatrix(X).shape
@@ -125,7 +134,11 @@ class KNNClassify(BaseClassify):
 
 	def set_alpha(self, alpha):
 		"""
-		Set weight parameter.  alpha should be an int or float.
+		Set weight parameter.  
+
+		Parameters
+		----------
+		alpha : scalar (int or float)
 		"""
 		if type(alpha) not in [int, float]:
 			raise TypeError('alpha must be of type int or float')
@@ -134,7 +147,11 @@ class KNNClassify(BaseClassify):
 	
 	def set_classes(self, classes):
 		"""
-		Set classes.  classes should be an interable of class tags.
+		Set classes.  
+
+		Parameters
+		----------
+		classes : interable of class tags
 		"""
 		try:
 			iter(classes)
@@ -145,7 +162,11 @@ class KNNClassify(BaseClassify):
 
 	def set_K(self, K):
 		"""
-		Set K. K Should be an int.
+		Set K. 
+
+		Parameters
+		----------
+		K : int
 		"""
 		if type(K) not in [int, float]:
 			raise TypeError('K must be of type int or float')

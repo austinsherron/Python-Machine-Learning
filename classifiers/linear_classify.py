@@ -26,6 +26,7 @@ class LinearClassify(Classify):
 		max_steps=5000, init='zeros', train_soft=False):
 		"""
 		Constructor for LinearClassifier (perceptron). 
+
 		X is an N x M numpy array of N data points with M features. 
 		Y is a 1 x N numpy array that contains class labels that 
 		relate the the data points in X.  train_soft is a bool that
