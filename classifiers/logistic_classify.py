@@ -28,18 +28,23 @@ class LogisticClassify(Classify):
 		Constructor for LogisticClassifier (logistic classifier; linear classifier with
 		saturated output).
 
-		Args:
-			X is an N x M numpy array with N data points each with M features.
-			Y is a 1 x N numpy arra with class labels that relate to the data
-			  points in X.
-			init is the initialization method for the weights. It must be one
-			  of the following strings: zeros, random, regress, or bayes.
-			stop_iter is an int that is the maximum number of iterations through
-			  data before stoping.
-			stop_tol is a float that is the tolerance for the stopping
-			  criterion.
-			reg is a float that is the L2 regularization value.
-			stepsize is an int or a float that is the step size for gradient descent
+		Parameters
+		----------
+		X : N x M numpy array 
+			N = number of data points; M = number of features.
+		Y : 1 x N numpy array 
+			Class labels that relate to the data points in X.
+		init : str
+			Initialization method for the weights. One of 'zeros', 
+			'random', 'regress', or 'bayes'.
+		stop_iter : int 
+			Maximum number of iterations through data before stoping.
+		stop_tol : float 
+			Tolerance for the stopping criterion.
+		reg : float 
+			L2 regularization value.
+		stepsize : scalar (int or float) 
+			Step size for gradient descent.
 		"""
 		self.wts = []
 		self.classes = []
@@ -90,7 +95,7 @@ class LogisticClassify(Classify):
 	def train_soft(self, X, Y, init, stop_iter, stop_tol, stepsize):
 		"""
 		This method trains the logistic classifier. Soft training assumes data is already
-		in canonical form, but possibly real valued. Refer to train doc string 
+		in canonical form, but possibly real valued. Refer to constructor doc string 
 		for description of arguments.
 		"""
 		n,d = np.asmatrix(X).shape
@@ -120,7 +125,7 @@ class LogisticClassify(Classify):
 	def predict(self, X):
 		"""
 		This method makes predictions on test data X. Refer to
-		train doc string for description of X.
+		constructor doc string for description of X.
 		"""
 		pred = np.argmax(self.__logistic(X), axis=1)
 		pred = np.asarray([[self.classes[i[0]]] for i in pred])
@@ -130,7 +135,7 @@ class LogisticClassify(Classify):
 	def predict_soft(self, X):
 		"""
 		This method performs "soft" prediction on X (predicts real
-		valued numbers). Refer to train doc string for description
+		valued numbers). Refer to constructor doc string for description
 		of X.
 		"""
 		return self.__logistic(X)
@@ -143,8 +148,9 @@ class LogisticClassify(Classify):
 		"""
 		Set classes of the classifier. 
 
-		Args:
-			classes should be a list
+		Parameters
+		----------
+		classes : list
 		"""
 		if type(classes) is not list or len(classes) == 0:
 			raise TypeError('LogisticClassify.set_classes: classes should be a list with a length of at least 1')
@@ -155,8 +161,9 @@ class LogisticClassify(Classify):
 		"""
 		Set weights of the classifier. 
 
-		Args:
-			wts should be a list or a numpy array
+		Parameters
+		----------
+		wts : list or a numpy array
 		"""
 		if type(wts) not in [list, np.ndarray] or len(wts) == 0:
 			raise TypeError('LogisticClassify.set_weights: classes should be a list/numpy array with a length of at least 1')
