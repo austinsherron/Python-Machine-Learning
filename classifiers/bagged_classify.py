@@ -33,15 +33,18 @@ class BaggedClassify(Classify):
 		Constructor for BaggedClassifier. Classifier uses
 		n learners of type 'base'.
 
-		Args:
-			base = batch classifier object type, i.e. 'LinearClassify'
-			n = number of classifiers to use
-			X = N x M numpy array; N = number of data points, M = number
-			  of features
-			Y = 1 x N numpy array; N = number of class labels relating to
-			  data points in X
-			**kwargs = any number of additional arguments need for training
-			  learners of type 'base'
+		Parameters
+		----------
+		base : object that inherits from 'Classify'
+			batch classifier object type, i.e. 'LinearClassify'
+		n : int
+			number of classifiers to use
+		X : N x M numpy array
+			N = number of data points, M = number of features
+		Y : 1 x N numpy array
+			N = number of class labels relating to data points in X
+		**kwargs : mixed
+			any number of additional arguments need for training learners of type 'base'
 		"""
 		self.bag = []
 		self.classes = []
@@ -87,9 +90,10 @@ class BaggedClassify(Classify):
 		"""
 		This method makes predictions on X. 
 
-		Args:
-			X = N x M numpy array; N = number of data points (not necessarily
-			  the same as in train), M = number of featurs
+		Parameters
+		----------
+		X : N x M numpy array
+			N = number of data points (not necessarily the same as in train), M = number of featurs
 		"""
 		n,m = np.asmatrix(X).shape
 		b = len(self.bag)
@@ -115,8 +119,9 @@ class BaggedClassify(Classify):
 		"""
 		Set classes of the classifier. 
 
-		Args:
-			classes should be a list
+		Parameters
+		----------
+		classes : list 
 		"""
 		if type(classes) is not list or len(classes) == 0:
 			raise TypeError('BaggedClassify.set_classes: classes should be a list with a length of at least 1')
@@ -127,10 +132,11 @@ class BaggedClassify(Classify):
 		"""
 		This method sets the learner at index 'i' to 'base'.
 
-		Args:
-			i = int; the index of self.bag where 'base' will
-			  be placed
-			base = classifier object
+		Parameters
+		----------
+		i : int
+			the index of self.bag where 'base' will be placed
+		base : object that inherits from 'Classify'
 		"""
 		self[i] = base
 
@@ -170,9 +176,10 @@ class BaggedClassify(Classify):
 		at index 'i' returns the learner at index 'i' in
 		self.bag.
 
-		Args:
-			i = int; the index that specifies the learner
-			  to be returned
+		Parameters
+		----------
+		i : int
+			the index that specifies the learner to be returned
 		"""
 		if type(i) is not int:
 			raise TypeError('BaggedClassifier.__getitem__: argument \'i\' must be of type int')

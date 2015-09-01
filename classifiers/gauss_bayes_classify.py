@@ -24,14 +24,21 @@ class GaussBayesClassify(BaseClassify):
 
 	def __init__(self, X=None, Y=None, equal=0, diagonal=0, wts=None, reg=0):
 		"""
-		Constructor for GaussBayesClassifier. X and Y must be numpy arrays.
-		X is an N x M array that contains N data points with M features.
-		Y is a 1 x N array that contains the classes that correspond to the
-		data points in X. equal is a bool (or equivalent) that forces all 
-		classes to share a single covariance model. diagonal is a bool 
-		(or equivalent) that forces all classes to use a diagonal covariance
-		model. wts is a 1 x M vector of positive weights (ints or floats).
-		reg is an int or float that regularizes the covariance model.
+		Constructor for GaussBayesClassifier. 
+
+		Parameters
+		----------
+		X : N x M numpy array 
+			N = number data points; M = number of features.
+		Y : 1 x N array 
+			Contains class labels that correspond to the data points in X.
+		equal : bool (or equivalent) 
+			Forces all classes to share a single covariance model.
+		diagonal : bool (or equivalent) 
+			Forces all classes to use a diagonal covariance model. 
+		wts : 1 x M numpy array of positive weights (ints or floats).
+		reg : int or float 
+			Regularizes the covariance model.
 		"""
 		self.means = []
 		self.covars = []
@@ -88,9 +95,12 @@ class GaussBayesClassify(BaseClassify):
 	def predict_soft(self, X):
 		"""
 		This method makes "soft" predictions on test data using the trained
-		model. X is an N x M matrix of N data points with M features. N
-		doesn't necessarily have to be the same value as N in the training
-		method.
+		model. 		
+
+		Parameters
+		----------
+		X : N x M numpy array 
+			N = number data points; M = number of features.
 		"""
 		m = np.shape(np.asmatrix(X))[0]
 		C = len(self.classes)
@@ -138,8 +148,11 @@ class GaussBayesClassify(BaseClassify):
 
 	def set_classes(self, classes):
 		"""
-		Set classes of the classifier. classes should
-		be a list. 
+		Set classes of the classifier. 
+
+		Parameters
+		----------
+		classes : list 
 		"""
 		if type(classes) is not list or len(classes) == 0:
 			raise TypeError('classes must be a list with a length of at least 1')
@@ -148,8 +161,11 @@ class GaussBayesClassify(BaseClassify):
 
 	def set_covars(self, covars):
 		"""
-		Set covariances of the classifier. covars should be a
-		list of numpy arrays or matrices.
+		Set covariances of the classifier. 
+
+		Parameters
+		----------
+		covars : list of numpy arrays or matrices.
 		"""
 		if type(covars) is not list or len(covars) == 0:
 			raise TypeError('covars must be a list with a length of at least 1 that contains numpy arrays or matrices')
@@ -158,8 +174,11 @@ class GaussBayesClassify(BaseClassify):
 
 	def set_means(self, means):
 		"""
-		Set means of the classifier. means should be a list
-		of numpy arrays or matrices.
+		Set means of the classifier. 
+
+		Parameters
+		----------
+		means : list of numpy arrays or matrices.
 		"""
 		if type(means) is not list or len(means) == 0:
 			raise TypeError('means must be a list with a length of at least 1 that contains numpy arrays or matrices')
@@ -168,7 +187,11 @@ class GaussBayesClassify(BaseClassify):
 
 	def set_probs(self, probs):
 		"""
-		Set probs of the classifier. probs should be a list.
+		Set probs of the classifier. 
+
+		Parameters
+		----------
+		probs : list 
 		"""
 		if type(probs) is not list or len(probs) == 0:
 			raise TypeError('probs must be a list with a length of at least 1')
@@ -274,6 +297,7 @@ if __name__ == '__main__':
 	print(bgbc.auc(bted, btec), '\n')
 	print(bgbc.err(bted, btec), '\n')
 	print(bgbc.roc(bted, btec), '\n')
+	print(bgbc.confusion(bted, btec), '\n')
 
 	print()
 
@@ -285,6 +309,7 @@ if __name__ == '__main__':
 	print(bgbc2.auc(bted, btec), '\n')
 	print(bgbc2.err(bted, btec), '\n')
 	print(bgbc2.roc(bted, btec), '\n')
+	print(bgbc2.confusion(bted, btec), '\n')
 
 	print()
 
@@ -296,6 +321,7 @@ if __name__ == '__main__':
 	print(ibgbc.auc(btrd, btrc), '\n')
 	print(ibgbc.err(btrd, btrc), '\n')
 	print(ibgbc.roc(btrd, btrc), '\n')
+	print(ibgbc.confusion(btrd, btrc), '\n')
 
 	print()
 
@@ -307,6 +333,7 @@ if __name__ == '__main__':
 	print(bgbc3.auc(bted2, btec2), '\n')
 	print(bgbc3.err(bted2, btec2), '\n')
 	print(bgbc3.roc(bted2, btec2), '\n')
+	print(bgbc3.confusion(bted2, btec2), '\n')
 
 	print()
 
@@ -318,6 +345,7 @@ if __name__ == '__main__':
 	print(bgbc4.auc(bted2, btec2), '\n')
 	print(bgbc4.err(bted2, btec2), '\n')
 	print(bgbc4.roc(bted2, btec2), '\n')
+	print(bgbc4.confusion(bted2, btec2), '\n')
 
 	print()
 
@@ -329,6 +357,7 @@ if __name__ == '__main__':
 	print(ibgbc2.auc(btrd2, btrc2), '\n')
 	print(ibgbc2.err(btrd2, btrc2), '\n')
 	print(ibgbc2.roc(btrd2, btrc2), '\n')
+	print(ibgbc2.confusion(btrd2, btrc2), '\n')
 
 
 ################################################################################

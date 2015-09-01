@@ -32,19 +32,25 @@ class Classify:
 		This method provides syntatic sugar for training and prediction.
 		
 		To predict: classifier(X) == classifier.predict(X); first arg 
-		  should be a numpy array, other arguments can be keyword 
-		  args as necessary
-		To predict soft: classifier(X, soft=True) == classifier.predict_soft(X);
-		  first arg should be a numpy array and second
-		  argument should be the keyword arg 'soft=True'
-		To train: classifier(X, Y, **kwargs) == classifier.train(X, Y, **kwargs);
-		  first and second ars should be numpy arrays, other
-		  arguments can be keyword args as necessary
+	  	should be a numpy array, other arguments can be keyword 
+	  	args as necessary
 
-		Args:
-			This method takes any number of args or keyword args.
-			soft = bool; determines whether soft prediction will be
-			  used if available
+		To predict soft: classifier(X, soft=True) == classifier.predict_soft(X);
+	  	first arg should be a numpy array and second
+	  	argument should be the keyword arg 'soft=True'
+
+		To train: classifier(X, Y, **kwargs) == classifier.train(X, Y, **kwargs);
+		first and second ars should be numpy arrays, other
+		arguments can be keyword args as necessary
+
+		Parameters
+		----------
+		*args : mixed
+			any number of additional arguments needed for prediction or training
+		**kwargs : mixed
+			any number of additional arguments needed for prediction or training
+		soft : bool
+			determines whether soft prediction will be used if available
 		"""
 		if len(args) == 1 and type(args[0]) is np.ndarray:
 			if 'soft' in kwargs and kwargs['soft']:
@@ -67,13 +73,12 @@ class Classify:
 		This method computes the area under the roc curve on the given test data.
 		This method only works on binary classifiers. 
 
-		Args:
-			X = N x M numpy array of N data points with M features. 
-			Y = 1 x N numpy array of classes that refer to the data points in X.
-
-		NOTE: This method generalizes to: bagged_classify, gauss_bayes_classify,
-		knn_classify, linear_classify, logistic_classify, logistic_mse_classify,
-		nnet_classify, tree_classify 
+		Paramters
+		---------
+		X : N x M numpy array 
+			N = number of data points; M = number of features. 
+		Y : 1 x N numpy array 
+			array of classes that refer to the data points in X.
 		"""
 		if len(self.classes) > 2:
 			raise ValueError('This method can only supports binary classification ')
@@ -107,9 +112,6 @@ class Classify:
 		"""
 		This method estimates the confusion matrix (Y x Y_hat) from test data.
 		Refer to auc doc string for descriptions of X and Y.
-
-		NOTE: This method generalizes to: gauss_bayes_classify, knn_classify,
-		nnet_classify, tree_classify
 		"""
 		Y_hat = self.predict(X)
 		num_classes = len(self.classes)
@@ -123,14 +125,12 @@ class Classify:
 		"""
 		This method computes the error rate on test data.  
 
-		Args:
-			X = N x M numpy array of N data points with M features.  
-			Y = 1 x N numpy array of class values corresponding to 
-			  the data points in X.
-
-		NOTE: This method generalizes to: bagged_classify, gauss_bayes_classify,
-		knn_classify, linear_classify, logistic_classify, logistic_mse_classify,
-		nnet_classify, tree_classify 
+		Paramters
+		---------
+		X : N x M numpy array 
+			N = number of data points; M = number of features. 
+		Y : 1 x N numpy array 
+			array of classes that refer to the data points in X.
 		"""
 		Y_hat = self.predict(X)
 		Y_hat = np.transpose(Y_hat)
@@ -152,10 +152,6 @@ class Classify:
 		to the auc doc string for descriptions of X and Y. Method returns
 		[fpr, tpr, tnr]. Plot fpr and tpr to see the ROC curve. Plot tpr and
 		tnr to see the sensitivity/specificity curve.
-
-		NOTE: This method generalizes to: bagged_classify, gauss_bayes_classify,
-		knn_classify, linear_classify, logistic_classify, logistic_mse_classify,
-		nnet_classify, tree_classify 
 		"""
 		if len(self.classes) > 2:
 			raise ValueError('This method can only supports binary classification ')
