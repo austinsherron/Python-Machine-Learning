@@ -27,11 +27,27 @@ class LinearClassify(Classify):
 		"""
 		Constructor for LinearClassifier (perceptron). 
 
-		X is an N x M numpy array of N data points with M features. 
-		Y is a 1 x N numpy array that contains class labels that 
-		relate the the data points in X.  train_soft is a bool that
-		determines the training method for the classifier. Refer to the train
-		doc string for descriptions of training option arguments.
+		Parameters
+		----------
+		X : N x M numpy array 
+			N = number data points; M = number of features. 
+		Y : 1 x N numpy array 
+			Contains class labels that relate the the data points in X.  
+		method : str
+			One of 'perceptron', 'logisticmse', or 'hinge'.
+		reg : scalar (int or float) or 1 x M + 1 numpy array (where first entry is constant feature)
+			L2 regularization penalty parameter.
+		stepsize : float 
+			Step size for gradient descent.
+		tolerance : float
+			Tolerance for stopping criterion.
+		max_steps : int 
+			Maximum number of steps to take before stopping.
+		init : str
+			One of 'keep' (keep current weights), 'zeros' (all-zeros), 'randn' (random), 
+			or 'linreg' (linear regression solution).
+		train_soft : bool 
+			Determines the training method for the classifier. 
 
 		TODO:
 			Fix auc
@@ -65,17 +81,8 @@ class LinearClassify(Classify):
 	def train(self, X, Y, method='perceptron', reg=0.1, stepsize=0.01, tolerance=1e-4, 
 		max_steps=5000, init='zeros'):
 		"""
-		This method trains the linear classifer. 
-		X is an N x M numpy array that contains N data points with M features. 
-		Y is a 1 x N numpy array that contains class lables that refer to the data points in X. 
-		method must be one of the following strings: 'perceptron', 'logisticmse', or 'hinge'.
-		reg is the L2 regularization penalty parameter and must be a scalar (int, float) 
-		or a 1 x M+1 numpy array (where the first entry is the constant feature). 
-		stepsize is the step size for gradient descent, and must be a float. 
-		tolerance is the tolerance for stopping criterion, and must be a float. 
-		max_steps is the maximum number of steps to take before stopping, and it must be an int. 
-		init is one of the following strings: 'keep' (keep current weights), 'zeros' 
-		(all-zeros), 'randn' (randon), or 'linreg' (linear regression solution).
+		This method trains the linear classifer. Refer to constructor 
+		doc string for argument descriptions.
 		"""
 		n,d = np.asmatrix(X).shape
 		X_train = np.concatenate((np.ones((n,1)), X), axis=1)
@@ -96,7 +103,7 @@ class LinearClassify(Classify):
 	def train_soft(self, X, Y, stepsize=.01, tolerance=1e-4, max_steps=5000, init='zeros'):
 		"""
 		This method trains the linear classifier. Soft training assumes data is already
-		in canonical form, but possibly real valued. Refer to train doc string 
+		in canonical form, but possibly real valued. Refer to constructor doc string 
 		for description of arguments.
 		"""
 		n,d = np.asmatrix(X).shape
@@ -127,8 +134,11 @@ class LinearClassify(Classify):
 	def predict(self, X):
 		"""
 		This method makes predictions on test data X.
-		X is a N x M numpy array. N doesn't have to be the same
-		as it is in the constructor/training methods, but M does.
+
+		Parameters
+		----------
+		X : N x M numpy array 
+			N = number data points; M = number of features. 
 		"""
 		indices = np.sign(self.wts[0] + np.dot(X, self.wts[1:])) / 2 + .5
 		Y_te = np.asarray([self.classes[int(i)] for i in indices])
@@ -149,7 +159,11 @@ class LinearClassify(Classify):
 
 	def set_classes(self, classes):
 		"""
-		Set classes of the classifier. classes should be a list.
+		Set classes of the classifier. 
+
+		Parameters
+		----------
+		classes : list
 		"""
 		if type(classes) is not list or len(classes) == 0:
 			raise TypeError('LinearClassify.set_classes: classes should be a list with a length of at least 1')
@@ -158,8 +172,11 @@ class LinearClassify(Classify):
 
 	def set_weights(self, wts):
 		"""
-		Set weights of the classifier. wts should be a list
-		or a numpy array
+		Set weights of the classifier. 
+
+		Parameters
+		----------
+		wts : list or a numpy array
 		"""
 		if type(wts) not in [list, np.ndarray] or len(wts) == 0:
 			raise TypeError('LinearClassify.set_weights: classes should be a list/numpy array with a length of at least 1')
@@ -185,9 +202,6 @@ class LinearClassify(Classify):
 		Helper method that intializes self.wts. Used in: 
 			train
 			train_soft
-
-		TODO:
-			Fix 'linreg' option
 		"""
 		if init == 'keep':
 			self.wts = self.wts if len(self.wts) == d + 1 else np.asarray([0 for i in range(d + 1)])
