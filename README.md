@@ -3,7 +3,6 @@
 These machine learning algorithms have been adapted from
 algorithms written in Matlab by Professor [Alex Ihler](http://www.ics.uci.edu/~ihler/). 
 
-
 ## Documentation
 
 ### Regressors
@@ -99,6 +98,7 @@ Y = 1 x N numpy array that contains values that correspond to the data points in
 * ~~implement and test ```treeRegress```~~
 * ~~implement and test ```baggedRegress```~~
 * implement and test ```nnetRegress```
+* implement and test ```logisticRegress```
 
 #### Low Priority
 
