@@ -3,6 +3,8 @@
 ################################################################################
 
 
+import numpy as np
+
 from csv import reader
 
 
@@ -80,6 +82,61 @@ def filter_data(data, labels, filter_func):
 			filtered_labels.append(label)
 
 	return filtered_data,filtered_labels
+
+
+def to_1_of_k(Y, values=None):
+	"""
+	Function that converts Y into discrete valued matrix;
+	i.e.: to_1_of_k([3,3,2,2,4,4]) = [[ 1 0 0 ]
+									  [ 1 0 0 ]
+									  [ 0 1 0 ]
+									  [ 0 1 0 ]
+									  [ 0 0 1 ]
+									  [ 0 0 1 ]]
+
+	Parameters
+	----------
+	Y : array like
+		1 x N (or N x 1) array of values (ints) to be converted.
+	values : list (optional)
+		List that specifices indices of of Y values in return matrix.
+
+	Returns
+	-------
+	array
+		Discrete valued 2d representation of Y.
+	"""
+	n,d = np.matrix(Y).shape
+
+	assert min(n,d) == 1
+	values = values if values else list(np.unique(Y))
+	C = len(values)
+	flat_Y = Y.flatten()
+	
+	index = []
+	for l in flat_Y:
+		index.append(values.index(l))
+
+	return np.array([[0 if r != i else 1 for i in range(C)] for r in index])
+
+
+def from_1_of_k(Y, values=None):
+	"""
+	Funciton that converts Y from 1-of-k rep back to single col/row form.
+
+	Parameters
+	----------
+	Y : arraylike
+		Matrix to convert from 1-of-k rep.
+	values : list (optional)
+		List that specifies which values to use for which index.
+
+	Returns
+	-------
+	array
+		Y in single row/col form.
+	"""
+	return Y.argmax(1) if not values else np.atleast_2d([values[i] for i in Y.argmax(1)]).T
 
 
 ################################################################################

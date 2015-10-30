@@ -6,8 +6,12 @@
 import csv
 import math
 import numpy as np
+import random
+
 from base_classify import BaseClassify
 from classify import Classify
+from numpy import asarray as arr
+from utils import load_data_from_csv
 
 
 ################################################################################
@@ -272,94 +276,124 @@ class GaussBayesClassify(BaseClassify):
 
 if __name__ == '__main__':
 
-	data = [[float(val) for val in row[:-1]] for row in csv.reader(open('../classifier-data.csv'))]
-	trd = np.asarray(data[0:40] + data[50:90] + data[100:140])
-	ted = np.asarray(data[40:50] + data[90:100] + data[140:150])
-	classes = [float(row[-1].lower()) for row in csv.reader(open('../classifier-data.csv'))]
-	trc = np.asarray(classes[0:40] + classes[50:90] + classes[100:140])
-	tec = np.asarray(classes[40:50] + classes[90:100] + classes[140:150])
+## RANDOM TESTING ##############################################################
 
-	btrd = trd[0:80,:]
-	bted = ted[0:20,:]
-	btrc = trc[0:80]
-	btec = tec[0:20]
+	data,classes = load_data_from_csv('../classifier-data.csv', 4, float)
+	data,classes = arr(data), arr(classes)
 
-	btrd2 = trd[40:120,:]
-	bted2 = ted[10:30,:]
-	btrc2 = trc[40:120]
-	btec2 = tec[10:30]
+	start = 0
+	end = len(data)
 
-	print('bgbc', '\n')
-	bgbc = GaussBayesClassify(btrd, btrc, equal=0, diagonal=0, wts=None, reg=0)
-	print(bgbc, '\n')
-	print(bgbc.predict(bted), '\n')
-	print(bgbc.predict_soft(bted), '\n')
-	print(bgbc.auc(bted, btec), '\n')
-	print(bgbc.err(bted, btec), '\n')
-	print(bgbc.roc(bted, btec), '\n')
-	print(bgbc.confusion(bted, btec), '\n')
+	avg_err = 0
 
-	print()
+	for i in range(start, end):
+		indexes = range(end)
+		train_indexes = random.sample(indexes, int(.8 * end))
+		test_indexes = list(set(indexes) - set(train_indexes))
 
-	print('bgbc2', '\n')
-	bgbc2 = GaussBayesClassify(btrd, btrc, equal=1, diagonal=1, wts=None, reg=np.asarray([1,3,4,6]))
-	print(bgbc2, '\n')
-	print(bgbc2.predict(bted), '\n')
-	print(bgbc2.predict_soft(bted), '\n')
-	print(bgbc2.auc(bted, btec), '\n')
-	print(bgbc2.err(bted, btec), '\n')
-	print(bgbc2.roc(bted, btec), '\n')
-	print(bgbc2.confusion(bted, btec), '\n')
+		trd,trc = data[train_indexes], classes[train_indexes]
+		ted,tec = data[test_indexes], classes[test_indexes]
+		print('gbc', '\n')
+		gbc = GaussBayesClassify(trd, trc)
+		print(gbc, '\n')
+	#	print(gbc.predict(ted), '\n')
+	#	print(gbc.predict_soft(ted), '\n')
+	#	print(gbc.confusion(ted, tec), '\n')
+		print(gbc.err(ted, tec), '\n')
+		avg_err += gbc.err(ted, tec)
 
-	print()
+	print(avg_err / end)
 
-	print('ibgbc', '\n')
-	ibgbc = GaussBayesClassify(bted, btec, equal=0, diagonal=0, wts=None, reg=0)
-	print(ibgbc, '\n')
-	print(ibgbc.predict(btrd), '\n')
-	print(ibgbc.predict_soft(btrd), '\n')
-	print(ibgbc.auc(btrd, btrc), '\n')
-	print(ibgbc.err(btrd, btrc), '\n')
-	print(ibgbc.roc(btrd, btrc), '\n')
-	print(ibgbc.confusion(btrd, btrc), '\n')
-
-	print()
-
-	print('bgbc3', '\n')
-	bgbc3 = GaussBayesClassify(btrd2, btrc2, equal=0, diagonal=0, wts=None, reg=0)
-	print(bgbc3, '\n')
-	print(bgbc3.predict(bted2), '\n')
-	print(bgbc3.predict_soft(bted2), '\n')
-	print(bgbc3.auc(bted2, btec2), '\n')
-	print(bgbc3.err(bted2, btec2), '\n')
-	print(bgbc3.roc(bted2, btec2), '\n')
-	print(bgbc3.confusion(bted2, btec2), '\n')
-
-	print()
-
-	print('bgbc4', '\n')
-	bgbc4 = GaussBayesClassify(btrd2, btrc2, equal=1, diagonal=1, wts=None, reg=np.asarray([1,3,4,6]))
-	print(bgbc4, '\n')
-	print(bgbc4.predict(bted2), '\n')
-	print(bgbc4.predict_soft(bted2), '\n')
-	print(bgbc4.auc(bted2, btec2), '\n')
-	print(bgbc4.err(bted2, btec2), '\n')
-	print(bgbc4.roc(bted2, btec2), '\n')
-	print(bgbc4.confusion(bted2, btec2), '\n')
-
-	print()
-
-	print('ibgbc2', '\n')
-	ibgbc2 = GaussBayesClassify(bted2, btec2, equal=1, diagonal=1, wts=None, reg=0)
-	print(ibgbc2, '\n')
-	print(ibgbc2.predict(btrd2), '\n')
-	print(ibgbc2.predict_soft(btrd2), '\n')
-	print(ibgbc2.auc(btrd2, btrc2), '\n')
-	print(ibgbc2.err(btrd2, btrc2), '\n')
-	print(ibgbc2.roc(btrd2, btrc2), '\n')
-	print(ibgbc2.confusion(btrd2, btrc2), '\n')
-
-
-################################################################################
-################################################################################
-################################################################################
+### DETERMINISTIC TESTING #######################################################
+#
+#	data = [[float(val) for val in row[:-1]] for row in csv.reader(open('../classifier-data.csv'))]
+#	trd = np.asarray(data[0:40] + data[50:90] + data[100:140])
+#	ted = np.asarray(data[40:50] + data[90:100] + data[140:150])
+#	classes = [float(row[-1].lower()) for row in csv.reader(open('../classifier-data.csv'))]
+#	trc = np.asarray(classes[0:40] + classes[50:90] + classes[100:140])
+#	tec = np.asarray(classes[40:50] + classes[90:100] + classes[140:150])
+#
+#	btrd = trd[0:80,:]
+#	bted = ted[0:20,:]
+#	btrc = trc[0:80]
+#	btec = tec[0:20]
+#
+#	btrd2 = trd[40:120,:]
+#	bted2 = ted[10:30,:]
+#	btrc2 = trc[40:120]
+#	btec2 = tec[10:30]
+#
+#	print('bgbc', '\n')
+#	bgbc = GaussBayesClassify(btrd, btrc, equal=0, diagonal=0, wts=None, reg=0)
+#	print(bgbc, '\n')
+#	print(bgbc.predict(bted), '\n')
+#	print(bgbc.predict_soft(bted), '\n')
+#	print(bgbc.auc(bted, btec), '\n')
+#	print(bgbc.err(bted, btec), '\n')
+#	print(bgbc.roc(bted, btec), '\n')
+#	print(bgbc.confusion(bted, btec), '\n')
+#
+#	print()
+#
+#	print('bgbc2', '\n')
+#	bgbc2 = GaussBayesClassify(btrd, btrc, equal=1, diagonal=1, wts=None, reg=np.asarray([1,3,4,6]))
+#	print(bgbc2, '\n')
+#	print(bgbc2.predict(bted), '\n')
+#	print(bgbc2.predict_soft(bted), '\n')
+#	print(bgbc2.auc(bted, btec), '\n')
+#	print(bgbc2.err(bted, btec), '\n')
+#	print(bgbc2.roc(bted, btec), '\n')
+#	print(bgbc2.confusion(bted, btec), '\n')
+#
+#	print()
+#
+#	print('ibgbc', '\n')
+#	ibgbc = GaussBayesClassify(bted, btec, equal=0, diagonal=0, wts=None, reg=0)
+#	print(ibgbc, '\n')
+#	print(ibgbc.predict(btrd), '\n')
+#	print(ibgbc.predict_soft(btrd), '\n')
+#	print(ibgbc.auc(btrd, btrc), '\n')
+#	print(ibgbc.err(btrd, btrc), '\n')
+#	print(ibgbc.roc(btrd, btrc), '\n')
+#	print(ibgbc.confusion(btrd, btrc), '\n')
+#
+#	print()
+#
+#	print('bgbc3', '\n')
+#	bgbc3 = GaussBayesClassify(btrd2, btrc2, equal=0, diagonal=0, wts=None, reg=0)
+#	print(bgbc3, '\n')
+#	print(bgbc3.predict(bted2), '\n')
+#	print(bgbc3.predict_soft(bted2), '\n')
+#	print(bgbc3.auc(bted2, btec2), '\n')
+#	print(bgbc3.err(bted2, btec2), '\n')
+#	print(bgbc3.roc(bted2, btec2), '\n')
+#	print(bgbc3.confusion(bted2, btec2), '\n')
+#
+#	print()
+#
+#	print('bgbc4', '\n')
+#	bgbc4 = GaussBayesClassify(btrd2, btrc2, equal=1, diagonal=1, wts=None, reg=np.asarray([1,3,4,6]))
+#	print(bgbc4, '\n')
+#	print(bgbc4.predict(bted2), '\n')
+#	print(bgbc4.predict_soft(bted2), '\n')
+#	print(bgbc4.auc(bted2, btec2), '\n')
+#	print(bgbc4.err(bted2, btec2), '\n')
+#	print(bgbc4.roc(bted2, btec2), '\n')
+#	print(bgbc4.confusion(bted2, btec2), '\n')
+#
+#	print()
+#
+#	print('ibgbc2', '\n')
+#	ibgbc2 = GaussBayesClassify(bted2, btec2, equal=1, diagonal=1, wts=None, reg=0)
+#	print(ibgbc2, '\n')
+#	print(ibgbc2.predict(btrd2), '\n')
+#	print(ibgbc2.predict_soft(btrd2), '\n')
+#	print(ibgbc2.auc(btrd2, btrc2), '\n')
+#	print(ibgbc2.err(btrd2, btrc2), '\n')
+#	print(ibgbc2.roc(btrd2, btrc2), '\n')
+#	print(ibgbc2.confusion(btrd2, btrc2), '\n')
+#
+#
+#################################################################################
+#################################################################################
+#################################################################################
