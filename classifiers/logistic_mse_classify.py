@@ -6,12 +6,14 @@
 import csv
 import math
 import numpy as np
+import random
 
 from base_classify import BaseClassify
 from classify import Classify
 from numpy import asarray as arr
 from numpy import asmatrix as mat
 from numpy import newaxis as nxs
+from utils import load_data_from_csv,filter_data
 
 
 ################################################################################
@@ -102,8 +104,11 @@ class LogisticMSEClassify(Classify):
 				self.wts = self.wts - step_i * grad
 
 			# compute error values
-			err[iter - 1] = np.mean(Y != np.sign(X_train * self.wts))									# misclassification rate
-			surr[iter - 1] = np.mean((Y[nxs].T - 2 / (1 + np.exp(-X_train * self.wts)) + 1) ** 2)		# logistic MSE surrogate
+			# misclassification rate
+			err[iter] = np.mean(Y != np.sign(X_train * self.wts))											
+			# logistic MSE surrogate
+			surr[iter] = np.mean((Y[nxs].T - 2 / (1 + np.exp(mat(-X_train) * mat(self.wts).T)) + 1)[0] ** 2)				
+
 
 			# compute stopping conditions
 			done = iter > 0 and ((np.abs(surr[iter] - surr[iter - 1]) < tolerance) or iter >= max_steps)
@@ -120,28 +125,39 @@ class LogisticMSEClassify(Classify):
 		return self.classes[t]
 
 
-	def predict_soft(self):
-		pass
+	def predict_soft(self, X):
+		"""
+		This method performs "soft" prediction on X (predicts real
+		valued numbers). Refer to constructor doc string for description
+		of X.
+		"""
+		return self.wts[:,0] + X.dot(self.wts[:,1:].T)
 
 
 ## MUTATORS ####################################################################
 
 
-	def set_weights(self):
-		pass
+	def set_weights(self, wts):
+		"""
+		Set weights of the classifier. 
+
+		Parameters
+		----------
+		wts : list or a numpy array
+		"""
+		if type(wts) not in [list, np.ndarray] or len(wts) == 0:
+			raise TypeError('LogisticClassify.set_weights: classes should be a list/numpy array with a length of at least 1')
+		self.wts = np.asarray(wts)
 
 
 ## INSPECTORS ##################################################################
 
+
 	def get_weights(self):
-		pass
+		return self.wts
 
 
 ## HELPERS #####################################################################
-
-
-	def __logistic(self):
-		pass
 
 
 	def __init_weights(self, X, Y, init='zeros'):
@@ -197,6 +213,43 @@ class LogisticMSEClassify(Classify):
 
 if __name__ == '__main__':
 
+## RANDOM TESTING ##############################################################
+
+#	data,classes = load_data_from_csv('../classifier-data.csv', 4, float)
+#	bd1,bc1 = filter_data(data, classes, lambda x,y: y == 0)
+#	bd2,bc2 = filter_data(data, classes, lambda x,y: y == 1)
+#	bd3,bc3 = filter_data(data, classes, lambda x,y: y == 2)
+#
+#	bd1,bc1 = arr(bd1), arr(list(map(lambda x: -1 if x != 1 else 1, bc1)))
+#	bd2,bc2 = arr(bd2), arr(list(map(lambda x: -1 if x != 0 else 1, bc2)))
+#	bd3,bc3 = arr(bd3), arr(list(map(lambda x: -1 if x != 1 else 1, bc3)))
+#
+#	start = 0
+#	#start = int(len(bd1) * .1)
+#	end = len(bd1)
+#
+#	avg_err = 0
+#
+#	for i in range(start, end):
+#		indexes = range(end)
+#		train_indexes = random.sample(indexes, int(.8 * end))
+#		test_indexes = list(set(indexes) - set(train_indexes))
+#
+#		trd,trc = bd1[train_indexes], bc1[train_indexes]
+#		ted,tec = bd1[test_indexes], bc1[test_indexes]
+#		print('lc', '\n')
+#		lc = LogisticMSEClassify(trd, trc)
+#		print(lc, '\n')
+#	#	print(lc.predict(ted), '\n')
+#	#	print(lc.predict_soft(ted), '\n')
+#	#	print(lc.confusion(ted, tec), '\n')
+#		print(lc.err(ted, tec), '\n')
+#		avg_err += lc.err(ted, tec)
+#
+#	print(avg_err / end)
+
+## DETERMINISTIC TESTING #######################################################
+
 	data = [[float(val) for val in row[:-1]] for row in csv.reader(open('../classifier-data.csv'))]
 	trd = np.asarray(data[0:40] + data[50:90] + data[100:140])
 	ted = np.asarray(data[40:50] + data[90:100] + data[140:150])
@@ -214,18 +267,16 @@ if __name__ == '__main__':
 	btrc2 = trc[40:120]
 	btec2 = tec[10:30]
 
-
-	btrc = arr([1 if x else -1 for x in btrc])
-	btec = arr([1 if x else -1 for x in btec])
+	btrc = arr(list(map(lambda x: -1 if x != 1 else 1, btrc)))
+	btec = arr(list(map(lambda x: -1 if x != 1 else 1, btec)))
 
 	print('lc', '\n')
 	lc = LogisticMSEClassify(bted, btec)
 	print(lc, '\n')
 	print(lc.predict(btrd), '\n')
-#	print(lc.predict_soft(ted), '\n')
-#	print(lc.confusion(ted, tec), '\n')
+	print(lc.predict_soft(ted), '\n')
+	#print(lc.confusion(ted, tec), '\n')
 	print(lc.err(btrd, btrc), '\n')
-
 
 ################################################################################
 ################################################################################

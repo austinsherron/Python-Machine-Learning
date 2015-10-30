@@ -91,7 +91,7 @@ Y = 1 x N numpy array that contains values that correspond to the data points in
 #### Next Steps
 
 * ~~finish and test ```baggedClassify```~~
-* implement and test ```logisticMseClassify```
+* ~~implement ```logisticMseClassify```~~
 * implement and test ```nnetClassify```
 * ~~implement and test ```knnRegress```~~
 * ~~implement and test ```linearRegress```~~
@@ -99,6 +99,7 @@ Y = 1 x N numpy array that contains values that correspond to the data points in
 * ~~implement and test ```baggedRegress```~~
 * implement and test ```nnetRegress```
 * implement and test ```logisticRegress```
+* test `logisticMseClassify`
 
 #### Low Priority
 
