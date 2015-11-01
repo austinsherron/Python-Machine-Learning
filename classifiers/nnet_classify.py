@@ -318,7 +318,7 @@ if __name__ == '__main__':
 	tec = np.asarray(classes[40:50] + classes[90:100] + classes[140:150])
 
 	print('nc')
-	nc = NNetClassify(trd, trc, [4,5,5,5,5,3], init='random', max_steps=10000, activation='htangent', tolerance=1e-16)
+	nc = NNetClassify(trd, trc, [4,5,5,5,5,5,3], init='random', max_steps=20000, activation='htangent', tolerance=1e-16)
 	print(nc.get_weights())
 	print(nc)
 	print(nc.predict(ted))

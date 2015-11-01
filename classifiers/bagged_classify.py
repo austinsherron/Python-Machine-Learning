@@ -75,14 +75,15 @@ class BaggedClassify(Classify):
 		self.base = base
 
 		self.classes = list(np.unique(Y)) if len(self.classes) == 0 else self.classes
-		m,d = np.asmatrix(X).shape											
+		m,d = np.asmatrix(X).shape							# get data size
 
 		for i in range(n):
+			# choose random sample with replacement...
 			subset = np.asarray(np.ceil((m - 1) * np.random.rand(1, m - 1)), dtype=int)
-			X_sub = X[subset,:][0]
+			X_sub = X[subset,:][0]											
 			Y_sub = Y[subset][0]
 
-			classifier = base(X_sub, Y_sub, **kwargs)
+			classifier = base(X_sub, Y_sub, **kwargs)		# ...and train learner 'i' with those data
 			self.bag.append(classifier)
 	
 
@@ -96,16 +97,16 @@ class BaggedClassify(Classify):
 			N = number of data points (not necessarily the same as in train), M = number of featurs
 		"""
 		n,m = np.asmatrix(X).shape
-		b = len(self.bag)
+		b = len(self.bag)									# 'b' learners in the ensemble
 
 		predictions = np.zeros((n,1))
-		for i in range(b):
+		for i in range(b):									# make all b predictions
 			predictions = np.concatenate((predictions, self.bag[i].predict(X)), axis=1)
 		predictions = predictions[:,1:]
 
 		C = len(self.classes)
 		nc = np.zeros((n,C))
-		for c in range(C):
+		for c in range(C):									# count how many instances of each class there are
 			nc[:,c] = np.sum(predictions == self.classes[c], axis=1)
 
 		indices = np.argmax(nc, axis=1)
