@@ -79,10 +79,10 @@ class BaggedClassify(Classify):
 
 		for i in range(n):
 			subset = np.asarray(np.ceil((m - 1) * np.random.rand(1, m - 1)), dtype=int)
-			X_sub = X[subset,:]
-			Y_sub = Y[subset]
+			X_sub = X[subset,:][0]
+			Y_sub = Y[subset][0]
 
-			classifier = base(X, Y, **kwargs)
+			classifier = base(X_sub, Y_sub, **kwargs)
 			self.bag.append(classifier)
 	
 
@@ -297,65 +297,65 @@ if __name__ == '__main__':
 
 	print()
 
-	print('gb_bc', '\n')
-	gb_bc = BaggedClassify(GaussBayesClassify, 20, trd, trc)
-	print(gb_bc, '\n')
-	print(gb_bc.predict(ted), '\n')
-	print(gb_bc.err(ted, tec), '\n')
-	print(gb_bc.confusion(ted, tec), '\n')
+	print('dt_bc', '\n')
+	dt_bc = BaggedClassify(TreeClassify, 20, trd, trc)
+	print(dt_bc, '\n')
+	print(dt_bc.predict(ted), '\n')
+	print(dt_bc.err(ted, tec), '\n')
+	print(dt_bc.confusion(ted, tec), '\n')
 
 	print()
 
-	print('gb_ibc', '\n')
-	gb_ibc = BaggedClassify(GaussBayesClassify, 30, ted, tec)
-	print(gb_ibc, '\n')
-	print(gb_ibc.predict(trd), '\n')
-	print(gb_ibc.err(trd, trc), '\n')
-	print(gb_ibc.confusion(trd, trc), '\n')
+	print('dt_ibc', '\n')
+	dt_ibc = BaggedClassify(TreeClassify, 30, ted, tec)
+	print(dt_ibc, '\n')
+	print(dt_ibc.predict(trd), '\n')
+	print(dt_ibc.err(trd, trc), '\n')
+	print(dt_ibc.confusion(trd, trc), '\n')
 
 	print()
 
-	print('gb_bbc', '\n')
-	gb_bbc = BaggedClassify(GaussBayesClassify, 40, btrd, btrc)
-	print(gb_bbc, '\n')
-	print(gb_bbc.predict(bted), '\n')
-	print(gb_bbc.auc(bted, btec), '\n')
-	print(gb_bbc.err(bted, btec), '\n')
-	print(gb_bbc.confusion(bted, btec), '\n')
-	print(gb_bbc.roc(bted, btec), '\n')
+	print('dt_bbc', '\n')
+	dt_bbc = BaggedClassify(TreeClassify, 40, btrd, btrc)
+	print(dt_bbc, '\n')
+	print(dt_bbc.predict(bted), '\n')
+	print(dt_bbc.auc(bted, btec), '\n')
+	print(dt_bbc.err(bted, btec), '\n')
+	print(dt_bbc.confusion(bted, btec), '\n')
+	print(dt_bbc.roc(bted, btec), '\n')
 
 	print()
 
-	print('gb_ibbc', '\n')
-	gb_ibbc = BaggedClassify(GaussBayesClassify, 50, bted, btec)
-	print(gb_ibbc, '\n')
-	print(gb_ibbc.predict(btrd), '\n')
-	print(gb_ibbc.auc(btrd, btrc), '\n')
-	print(gb_ibbc.err(btrd, btrc), '\n')
-	print(gb_ibbc.confusion(btrd, btrc), '\n')
-	print(gb_ibbc.roc(btrd, btrc), '\n')
+	print('dt_ibbc', '\n')
+	dt_ibbc = BaggedClassify(TreeClassify, 50, bted, btec)
+	print(dt_ibbc, '\n')
+	print(dt_ibbc.predict(btrd), '\n')
+	print(dt_ibbc.auc(btrd, btrc), '\n')
+	print(dt_ibbc.err(btrd, btrc), '\n')
+	print(dt_ibbc.confusion(btrd, btrc), '\n')
+	print(dt_ibbc.roc(btrd, btrc), '\n')
 
 	print()
 
-	print('gb_bbc2', '\n')
-	gb_bbc2 = BaggedClassify(GaussBayesClassify, 40, btrd2, btrc2)
-	print(gb_bbc2, '\n')
-	print(gb_bbc2.predict(bted2), '\n')
-	print(gb_bbc2.auc(bted2, btec2), '\n')
-	print(gb_bbc2.err(bted2, btec2), '\n')
-	print(gb_bbc2.confusion(bted2, btec2), '\n')
-	print(gb_bbc2.roc(bted2, btec2), '\n')
+	print('dt_bbc2', '\n')
+	dt_bbc2 = BaggedClassify(TreeClassify, 40, btrd2, btrc2)
+	print(dt_bbc2, '\n')
+	print(dt_bbc2.predict(bted2), '\n')
+	print(dt_bbc2.auc(bted2, btec2), '\n')
+	print(dt_bbc2.err(bted2, btec2), '\n')
+	print(dt_bbc2.confusion(bted2, btec2), '\n')
+	print(dt_bbc2.roc(bted2, btec2), '\n')
 
 	print()
 
-	print('gb_ibbc2', '\n')
-	gb_ibbc2 = BaggedClassify(GaussBayesClassify, 50, bted2, btec2)
-	print(gb_ibbc2, '\n')
-	print(gb_ibbc2.predict(btrd2), '\n')
-	print(gb_ibbc2.auc(btrd2, btrc2), '\n')
-	print(gb_ibbc2.err(btrd2, btrc2), '\n')
-	print(gb_ibbc2.confusion(btrd2, btrc2), '\n')
-	print(gb_ibbc2.roc(btrd2, btrc2), '\n')
+	print('dt_ibbc2', '\n')
+	dt_ibbc2 = BaggedClassify(TreeClassify, 50, bted2, btec2)
+	print(dt_ibbc2, '\n')
+	print(dt_ibbc2.predict(btrd2), '\n')
+	print(dt_ibbc2.auc(btrd2, btrc2), '\n')
+	print(dt_ibbc2.err(btrd2, btrc2), '\n')
+	print(dt_ibbc2.confusion(btrd2, btrc2), '\n')
+	print(dt_ibbc2.roc(btrd2, btrc2), '\n')
 
 	print()
 

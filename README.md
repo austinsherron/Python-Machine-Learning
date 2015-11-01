@@ -83,7 +83,7 @@ Y = 1 x N numpy array that contains values that correspond to the data points in
 * ~~change `range` to `permutation` (`grep 'np.random.permutation\*'`) and retest~~
 * add plotting 
 * fix `LogisticRegress`
-* fix `BaggedClassify` train method
+* ~~fix `BaggedClassify` train method~~
 * ~~fix `BaggedClassify.__setitem__`~~	
 * test `logisticMseClassify`
 

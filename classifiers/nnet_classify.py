@@ -126,9 +126,12 @@ class NNetClassify(Classify):
 					delta = delta[:,1:]										# discard constant feature
 					self.wts[l] = self.wts[l] - step_i * grad				# take gradient step on current layer wts
 
-			err[iter] = self.err_k(X,Y_tr_k)								# error rate (classification)
-			print('err[iter]')
-			print(err[iter])
+			err[iter] = self.err_k(X, Y_tr_k)								# error rate (classification)
+			surr[iter] = self.mse_k(X, Y_tr_k)								# surrogate (mse on output)
+
+			# check if finished
+			done = (iter > 1) and (np.abs(surr[iter] - surr[iter - 1]) < tolerance) or iter >= max_steps
+			iter += 1
 
 
 	def predict(self, X):
@@ -174,8 +177,13 @@ class NNetClassify(Classify):
 		pass
 
 
-	def mse_k(self):
-		pass
+	def mse_k(self, X, Y):
+		"""
+		Compute mean squared error of predictor; assumes Y is
+		in 1-of-k format. Refer to constructor docstring for
+		argument descriptions.
+		"""
+		return np.power(Y - self.predict_soft(X), 2).sum(1).mean(0)
 
 
 ## MUTATORS ####################################################################
@@ -242,7 +250,7 @@ class NNetClassify(Classify):
 		elif init == 'zeros':
 			self.wts = arr([np.zeros((sizes[i + 1],sizes[i] + 1)) for i in range(len(sizes) - 1)], dtype=object)
 		elif init == 'random':
-			self.wts = arr([.25 * np.random.randn(sizes[i+1],sizes[i]+1) for i in range(len(sizes) - 1)], dtype=object)
+			self.wts = arr([.0025 * np.random.randn(sizes[i+1],sizes[i]+1) for i in range(len(sizes) - 1)], dtype=object)
 		else:
 			raise ValueError('NNetClassify.init_weights: ' + str(init) + ' is not a valid option for init')
 
@@ -280,7 +288,7 @@ class NNetClassify(Classify):
 		Z = [concat((constant_feat, X_in), axis=1)]
 
 		for l in range(1, L):
-			A.append(Z[l - 1].dot(wts[l - 1].T))
+			A.append(Z[l - 1].dot(wts[l - 1].T))					# compute linear combination of previous layer
 			# pass through activation function and add constant feature
 			Z.append(cols((np.ones((mat(A[l]).shape[0],1)),sig(A[l]))))
 
@@ -309,20 +317,13 @@ if __name__ == '__main__':
 	trc = np.asarray(classes[0:40] + classes[50:90] + classes[100:140])
 	tec = np.asarray(classes[40:50] + classes[90:100] + classes[140:150])
 
-	btrd = trd[0:80,:]
-	bted = ted[0:20,:]
-	btrc = trc[0:80]
-	btec = tec[0:20]
-
-	btrd2 = trd[40:120,:]
-	bted2 = ted[10:30,:]
-	btrc2 = trc[40:120]
-	btec2 = tec[10:30]
-
 	print('nc')
-	nc = NNetClassify(trd, trc, [4,2,3])
+	nc = NNetClassify(trd, trc, [4,5,5,5,5,3], init='random', max_steps=10000, activation='htangent', tolerance=1e-16)
 	print(nc.get_weights())
 	print(nc)
+	print(nc.predict(ted))
+	print(nc.predict_soft(ted))
+	print(nc.err(ted, tec))
 
 
 ################################################################################
