@@ -6,7 +6,7 @@
 import csv
 import math
 import numpy as np
-from base_classify import BaseClassify
+
 from classify import Classify
 
 

@@ -8,7 +8,6 @@ import math
 import numpy as np
 import random
 
-from base_classify import BaseClassify
 from classify import Classify
 from numpy import asarray as arr
 from utils import filter_data, load_data_from_csv, test_randomly

@@ -6,9 +6,8 @@
 import csv
 import math
 import numpy as np
-from base_classify import BaseClassify
-from classify import Classify
 
+from classify import Classify
 from gauss_bayes_classify import GaussBayesClassify
 from knn_classify import KNNClassify
 from linear_classify import LinearClassify
