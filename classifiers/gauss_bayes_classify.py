@@ -296,13 +296,13 @@ if __name__ == '__main__':
 #		print(gbc.predict(ted), '\n')
 #		print(gbc.predict_soft(ted), '\n')
 #		print(gbc.confusion(ted, tec), '\n')
-#		print(gbc.auc(ted, tec), '\n')
-#		print(gbc.roc(ted, tec), '\n')
+		print(gbc.auc(ted, tec), '\n')
+		print(gbc.roc(ted, tec), '\n')
 		err = gbc.err(ted, tec)
 		print(err, '\n')
 		return err
 
-	avg_err = test_randomly(data, classes, 0.8, test)
+	avg_err = test_randomly(bd1, bc1, 0.8, test)
 
 	print('avg_err')
 	print(avg_err)

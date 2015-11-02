@@ -85,9 +85,9 @@ class Classify:
 		if len(self.classes) > 2:
 			raise ValueError('This method can only supports binary classification ')
 
-		try:
-			soft = self.predict_soft(X)[:,1]
-		except (AttributeError, IndexError):
+		try:									# compute 'response' (soft binary classification score)
+			soft = self.predict_soft(X)[:,1]	# p(class = 2nd)
+		except (AttributeError, IndexError):	# or we can use 'hard' binary prediction if soft is unavailable
 			soft = self.predict(X)
 
 		n,d = twod(soft).shape
@@ -97,20 +97,23 @@ class Classify:
 		else:
 			soft = soft.T.flatten()
 
-		sorted_soft = np.sort(soft)
-		indices = np.argsort(soft)
+		sorted_soft = np.sort(soft)				# sort data by score value
+		indices = np.argsort(soft)				
 		Y = Y[indices]
+		# find ties in the sorting score
 		same = np.append(np.asarray(sorted_soft[0:-1] == sorted_soft[1:]), 0)
 
 		n = len(soft)
-		rnk = self.__compute_ties(n, same)
+		rnk = self.__compute_ties(n, same)		# compute tied rank values
 		
+		# number of true negatives and positives
 		n0 = sum(Y == self.classes[0])
 		n1 = sum(Y == self.classes[1])
 
 		if n0 == 0 or n1 == 0:
 			raise ValueError('Data of both class values not found')
 
+		# compute AUC using Mann-Whitney U statistic
 		result = (np.sum(rnk[Y == self.classes[1]]) - n1 * (n1 + 1) / 2) / n1 / n0
 		return result
 
@@ -163,33 +166,37 @@ class Classify:
 		if len(self.classes) > 2:
 			raise ValueError('This method can only supports binary classification ')
 
-		try:
-			soft = self.predict_soft(X)[:,1]
+		try:									# compute 'response' (soft binary classification score)
+			soft = self.predict_soft(X)[:,1]	# p(class = 2nd)
 		except (AttributeError, IndexError):
-			soft = self.predict(X)
+			soft = self.predict(X)				# or we can use 'hard' binary prediction if soft is unavailable
 
 		n,d = twod(soft).shape
 
 		if n == 1:
 			soft = soft.flatten()
 		else:
-			soft = soft.T
+			soft = soft.T.flatten()
 
+		# number of true negatives and positives
 		n0 = np.sum(Y == self.classes[0])
 		n1 = np.sum(Y == self.classes[1])
 
 		if n0 == 0 or n1 == 0:
 			raise ValueError('Data of both class values not found')
 
+		# sort data by score value
 		sorted_soft = np.sort(soft)
 		indices = np.argsort(soft)
 
 		Y = Y[indices]
 
+		# compute false positives and true positive rates
 		tpr = np.divide(np.cumsum(Y[::-1] == self.classes[1]), n1)
 		fpr = np.divide(np.cumsum(Y[::-1] == self.classes[0]), n0)
 		tnr = np.divide(np.cumsum(Y == self.classes[0]), n0)[::-1]
 
+		# find ties in the sorting score
 		same = np.append(np.asarray(sorted_soft[0:-1] == sorted_soft[1:]), 0)
 		tpr = np.append([0], tpr[np.logical_not(same)])
 		fpr = np.append([0], fpr[np.logical_not(same)])
