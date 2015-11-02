@@ -10,7 +10,8 @@ import numpy as np
 from classify import Classify
 from numpy import asarray as arr
 from numpy import asmatrix as mat
-from utils import load_data_from_csv, filter_data, test_randomly
+from utils.data import load_data_from_csv, filter_data
+from utils.test import test_randomly
 
 
 ################################################################################

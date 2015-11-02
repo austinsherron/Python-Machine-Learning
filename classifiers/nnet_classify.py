@@ -14,7 +14,7 @@ from numpy import asmatrix as mat
 from numpy import atleast_2d as twod
 from numpy import concatenate as concat
 from numpy import column_stack as cols
-from utils import from_1_of_k, to_1_of_k
+from utils.utils import from_1_of_k, to_1_of_k
 
 
 ################################################################################

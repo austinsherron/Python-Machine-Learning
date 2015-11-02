@@ -12,7 +12,8 @@ from classify import Classify
 from numpy import asarray as arr
 from numpy import asmatrix as mat
 from numpy import newaxis as nxs
-from utils import load_data_from_csv,filter_data
+from utils.data import filter_data, load_data_from_csv
+from utils.test import test_randomly
 
 
 ################################################################################

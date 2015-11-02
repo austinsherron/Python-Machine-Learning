@@ -7,6 +7,9 @@ import numpy as np
 import random
 
 from csv import reader
+from numpy import asarray as arr
+from numpy import asmatrix as mat
+from numpy import atleast_2d as twod
 
 
 ################################################################################
@@ -17,115 +20,6 @@ from csv import reader
 ################################################################################
 ## UTILITY FUNCTIONS ###########################################################
 ################################################################################
-
-
-def load_data_from_csv(csv_path, label_index, trans_func=lambda x: x):
-	"""
-	Function that loads from a CSV into main memory.
-
-	Parameters
-	----------
-	csv_path : str
-		Path to CSV file that contains data.
-	label_indes : int
-		The index in the CSV rows that contains the label
-		for each data point.
-	trans_func : function object
-		Function that transform values in CSV, i.e.: str -> int.
-
-	Returns
-	-------
-	data,labels : (list)
-		Tuple that contains a list of data points (index 0) and
-		a list of labels corresponding to thos data points (index 1).
-	"""
-	data = []
-	labels = []
-
-	with open(csv_path) as f:
-		csv_data = reader(f)
-	
-		for row in csv_data:
-			row = list(map(trans_func, row))
-
-			labels.append(row.pop(label_index))
-			data.append(row)
-
-	return data,labels
-
-
-def filter_data(data, labels, filter_func):
-	"""
-	Function that filters data based on filter_func. Function
-	iterates through data and labels and passes the values
-	produced by the iterables to filter_func. If filter_func
-	returns True, the values aren't included in the return
-	arrays.
-
-	Parameters
-	----------
-	data : array-like
-		Array that contains data points.
-	labels : array-like
-		Array that contains labels.
-	filter_func : function object
-		Function that filters data/labels.
-
-	Returns
-	-------
-	filtered_data,filtered_labels : (list)
-		Filtered arrays.
-	"""
-	filtered_data,filtered_labels = [], []
-	for point,label in zip(data,labels):
-		if not filter_func(point,label):
-			filtered_data.append(point)
-			filtered_labels.append(label)
-
-	return filtered_data,filtered_labels
-
-
-def test_randomly(data, labels, mix=0.8, test=lambda x: 1.0, *args):
-	"""
-	Function that performs random tests using data/labels.
-
-	Parameters
-	----------
-	data : numpy array
-		N x M array of data points used for training/testing learner.
-		N = number of data; M = number of features.
-	labels : numpy array
-		1 x N array of class/regression labels used for training/testing learner.
-	mix : float
-		The percentage of data to use for training (1 - mix = percentage of data
-		used for testing).
-	test : function object
-		A function that takes at least four arguments (arrays containing data/labels
-		for testing/training) and performs tests. This function should return an
-		error value for one experiment.
-	args : mixed
-		Any additional arguments needed for testing.
-
-	Returns
-	-------
-	float
-		Average error value of all tests performed.
-	"""
-	start = 0
-	end = len(data)
-
-	avg_err = 0
-
-	for i in range(start, end):
-		indexes = range(end)
-		train_indexes = random.sample(indexes, int(mix * end))
-		test_indexes = list(set(indexes) - set(train_indexes))
-
-		trd,trc = data[train_indexes], labels[train_indexes]
-		ted,tec = data[test_indexes], labels[test_indexes]
-		avg_err += test(trd, trc, ted, tec, *args)
-
-	return avg_err / end
 
 
 def to_1_of_k(Y, values=None):
