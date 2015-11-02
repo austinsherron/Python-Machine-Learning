@@ -77,7 +77,7 @@ Y = 1 x N numpy array that contains values that correspond to the data points in
 
 
 * fix `auc/roc` methods, retest
-* remove dependency on BaseClassify
+* ~~remove dependency on BaseClassify~~
 * ~~fix `linreg` option in `LinearClassify` and test~~
 * test `train_soft` in `LinearClassify`/`LogisticClassify`
 * test `TreeClassify`training options 

@@ -80,7 +80,7 @@ class Classify:
 		X : N x M numpy array 
 			N = number of data points; M = number of features. 
 		Y : 1 x N numpy array 
-			array of classes that refer to the data points in X.
+			Array of classes that refer to the data points in X.
 		"""
 		if len(self.classes) > 2:
 			raise ValueError('This method can only supports binary classification ')
@@ -95,7 +95,7 @@ class Classify:
 		if n == 1:
 			soft = soft.flatten()
 		else:
-			soft = soft.T
+			soft = soft.T.flatten()
 
 		sorted_soft = np.sort(soft)
 		indices = np.argsort(soft)
