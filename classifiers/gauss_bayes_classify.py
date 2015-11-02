@@ -80,19 +80,20 @@ class GaussBayesClassify(BaseClassify):
 		wts = wts if type(wts) == np.ndarray else [1 for i in range(len(Y))]
 		wts = np.divide(wts, np.sum(wts))
 
+		# get classes if needed
 		self.classes = list(np.unique(Y)) if type(Y) == np.ndarray else []
 
 		for i in range(len(self.classes)):
 			indexes = np.where(Y == self.classes[i])[0]	
-			self.probs.insert(i, np.sum(wts[indexes]))
-			wtsi = np.divide(wts[indexes], self.probs[i])
-			self.means.insert(i, np.dot(wtsi, X[indexes,:]))
-			tmp = X[indexes,:] - self.means[i]
-			wtmp = np.transpose(wtsi * X[indexes,:].T)
+			self.probs.insert(i, np.sum(wts[indexes]))			# compute the (weighted) fraction of data in class i
+			wtsi = np.divide(wts[indexes], self.probs[i])		# compute relative weights of data in this class
+			self.means.insert(i, np.dot(wtsi, X[indexes,:]))	# compute the (weighted) mean
+			tmp = X[indexes,:] - self.means[i]					# center the data
+			wtmp = np.transpose(wtsi * X[indexes,:].T)			# weighted, centered data
 
 			self.__set_covars(tmp, wtmp, i, diagonal, reg)
 
-		if equal:
+		if equal:												# force covariances to be equal (take weighted average)
 			self.__handle_equal_covar()
 
 
@@ -109,8 +110,10 @@ class GaussBayesClassify(BaseClassify):
 		m = np.shape(np.asmatrix(X))[0]
 		C = len(self.classes)
 		p = np.zeros((m, C))
-		for c in range(C):
+		for c in range(C):										# compute probabilities for each class by Bayes rule
+			# p(c) * p(x|c)
 			p[:,c] = self.probs[c] * self.__eval_gaussian(X, self.means[c], self.covars[c])
+		# normalize each row (data point)
 		p = p / np.tile(np.transpose(np.asmatrix(np.sum(p, axis=1))), (1,C))
 		return np.asarray(p)
 
@@ -121,8 +124,8 @@ class GaussBayesClassify(BaseClassify):
 		model. Refer to the predict_soft doc string for a description of X.
 		"""
 		p = np.asmatrix(self.predict_soft(X))
-		max_i = np.argmax(p, axis=1)
-		return np.asarray([[self.classes[r[0]]] for r in max_i])
+		max_i = np.argmax(p, axis=1)								# find the index of the largest probability...
+		return np.asarray([[self.classes[r[0]]] for r in max_i])	# ...and return it
 
 
 	def mae(self, X, Y):
@@ -230,9 +233,9 @@ class GaussBayesClassify(BaseClassify):
 		This is a helper method that calculates covariances.  Used in:
 			train
 		"""
-		if diagonal:
-			self.covars.insert(i, np.diag(sum(tmp * wtmp) + reg))
-		else:
+		if diagonal:			# bruted force weighted variance computation
+			self.covars.insert(i, np.diag(sum(tmp * wtmp) + reg))		
+		else:					# weighted, regularized covariance computation
 			self.covars.insert(i, np.dot(tmp.T, wtmp) + np.diag(reg + 0 * self.means[i]))	
 
 
@@ -254,12 +257,15 @@ class GaussBayesClassify(BaseClassify):
 		Bayes Rules.  Used in:
 			predict_soft
 		"""
-		n = np.shape(np.asmatrix(X))[0]
-		d = np.shape(np.asmatrix(X))[1]
-		p = np.zeros((n, 1))
+		n = np.shape(np.asmatrix(X))[0]							# get number of data
+		d = np.shape(np.asmatrix(X))[1]							# get dimension of data
+		p = np.zeros((n, 1))									# store evaluated probabilities for each datum
+		# normalized constant for Gaussian
 		constant = 1 / (2 * math.pi)**(d / 2) / np.linalg.det(covars)**(0.5)
+		# need inverse covariance
 		inverse = np.linalg.inv(covars)
-		R = X - np.tile(means, (n, 1))
+		R = X - np.tile(means, (n, 1))							# compute probability of Gaussian at each point
+		# (vectorized)
 		p = np.exp(-0.5 * np.sum(np.dot(R, inverse) * R, axis=1)) * constant
 		return p
 			
