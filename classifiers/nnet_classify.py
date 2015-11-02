@@ -97,9 +97,9 @@ class NNetClassify(Classify):
 		# convert Y to 1-of-K format
 		Y_tr_k = to_1_of_k(Y)
 
-		n,d = mat(X).shape												# d = dim of data, n = number of data points
-		nc = len(self.classes)											# number of classes
-		L = len(self.wts) 												# get number of layers
+		n,d = mat(X).shape													# d = dim of data, n = number of data points
+		nc = len(self.classes)												# number of classes
+		L = len(self.wts) 													# get number of layers
 
 		# define desired activation function and it's derivative (for training)
 		sig,d_sig, = self.sig, self.d_sig
@@ -128,6 +128,11 @@ class NNetClassify(Classify):
 
 			err[iter] = self.err_k(X, Y_tr_k)								# error rate (classification)
 			surr[iter] = self.mse_k(X, Y_tr_k)								# surrogate (mse on output)
+
+			print('surr[iter]')
+			print(surr[iter])
+			print('iter')
+			print(iter)
 
 			# check if finished
 			done = (iter > 1) and (np.abs(surr[iter] - surr[iter - 1]) < tolerance) or iter >= max_steps
@@ -169,12 +174,25 @@ class NNetClassify(Classify):
 		return np.mean(Y_hat != from_1_of_k(Y))
 
 
-	def log_likelihood(self):
-		pass
+	def log_likelihood(self, X, Y):
+		"""
+		Compute the emperical avg. log likelihood of 'obj' on test data (X,Y).
+		See constructor doc string for argument descriptions.
+		"""
+		r,c = twod(Y).shape
+		if r == 1 and c != 1:
+			Y = twod(Y).T
+
+		soft = self.predict_soft(X)
+		return np.mean(np.sum(np.log(np.power(soft, Y, )), 1), 0)
 
 
-	def mse(self):
-		pass
+	def mse(self, X, Y):
+		"""
+		Compute mean squared error of predictor 'obj' on test data (X,Y).
+		See constructor doc string for argument descriptions.
+		"""
+		return mse_k(X, to_1_of_K(Y))
 
 
 	def mse_k(self, X, Y):
@@ -310,6 +328,10 @@ class NNetClassify(Classify):
 
 if __name__ == '__main__':
 
+## RANDOM TESTING ##############################################################
+
+## DETERMINISTIC TESTING #######################################################
+
 	data = [[float(val) for val in row[:-1]] for row in csv.reader(open('../classifier-data.csv'))]
 	trd = np.asarray(data[0:40] + data[50:90] + data[100:140])
 	ted = np.asarray(data[40:50] + data[90:100] + data[140:150])
@@ -318,7 +340,7 @@ if __name__ == '__main__':
 	tec = np.asarray(classes[40:50] + classes[90:100] + classes[140:150])
 
 	print('nc')
-	nc = NNetClassify(trd, trc, [4,5,5,5,5,5,3], init='random', max_steps=20000, activation='htangent', tolerance=1e-16)
+	nc = NNetClassify(trd, trc, [4,5,5,5,5,5,3], init='random', max_steps=5000, activation='htangent', tolerance=1e-16)
 	print(nc.get_weights())
 	print(nc)
 	print(nc.predict(ted))

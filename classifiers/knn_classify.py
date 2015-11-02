@@ -24,7 +24,7 @@ from utils import load_data_from_csv, filter_data, test_randomly
 ################################################################################
 
 
-class KNNClassify(BaseClassify):
+class KNNClassify(Classify):
 
 	def __init__(self, X=None, Y=None, K=1, alpha=0):
 		"""
@@ -232,17 +232,18 @@ if __name__ == '__main__':
 		print('knn', '\n')
 		knn = KNNClassify(trd, trc)
 		print(knn, '\n')
-	#	print(knn.predict(ted), '\n')
-	#	print(knn.predict_soft(ted), '\n')
-	#	print(knn.confusion(ted, tec), '\n')
-	#	print(knn.auc(ted, tec), '\n')
-	#	print(knn.roc(ted, tec), '\n')
+#		print(knn.predict(ted), '\n')
+#		print(knn.predict_soft(ted), '\n')
+#		print(knn.confusion(ted, tec), '\n')
+#		print(knn.auc(ted, tec), '\n')
+#		print(knn.roc(ted, tec), '\n')
 		err = knn.err(ted, tec)
 		print(err, '\n')
 		return err
 
 	avg_err = test_randomly(data, classes, 0.8, test)
 
+	print('avg_err')
 	print(avg_err)
 
 #### DETERMINISTIC TESTING #######################################################

@@ -6,6 +6,8 @@
 import math
 import numpy as np
 
+from numpy import atleast_2d as twod
+
 
 ################################################################################
 ################################################################################
@@ -88,11 +90,16 @@ class Classify:
 		except (AttributeError, IndexError):
 			soft = self.predict(X)
 
-		soft = np.asarray(np.asmatrix(soft).T)
-		soft = soft.ravel() if soft.shape[0] == 1 else soft
+		n,d = twod(soft).shape
+
+		if n == 1:
+			soft = soft.flatten()
+		else:
+			soft = soft.T
 
 		sorted_soft = np.sort(soft)
 		indices = np.argsort(soft)
+		Y = Y[indices]
 		same = np.append(np.asarray(sorted_soft[0:-1] == sorted_soft[1:]), 0)
 
 		n = len(soft)
@@ -161,8 +168,12 @@ class Classify:
 		except (AttributeError, IndexError):
 			soft = self.predict(X)
 
-		soft = np.asarray(np.asmatrix(soft).T)
-		soft = soft.ravel() if soft.shape[0] == 1 else soft
+		n,d = twod(soft).shape
+
+		if n == 1:
+			soft = soft.flatten()
+		else:
+			soft = soft.T
 
 		n0 = np.sum(Y == self.classes[0])
 		n1 = np.sum(Y == self.classes[1])
@@ -170,8 +181,8 @@ class Classify:
 		if n0 == 0 or n1 == 0:
 			raise ValueError('Data of both class values not found')
 
-		sorted_soft = np.sort(soft.T).ravel()
-		indices = np.asarray([i[0] for i in sorted(enumerate(soft.T), key=lambda x: x[1])])
+		sorted_soft = np.sort(soft)
+		indices = np.argsort(soft)
 
 		Y = Y[indices]
 

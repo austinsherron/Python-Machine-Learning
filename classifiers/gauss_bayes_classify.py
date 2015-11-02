@@ -24,7 +24,7 @@ from utils import filter_data, load_data_from_csv, test_randomly
 ################################################################################
 
 
-class GaussBayesClassify(BaseClassify):
+class GaussBayesClassify(Classify):
 
 	def __init__(self, X=None, Y=None, equal=0, diagonal=0, wts=None, reg=0):
 		"""
@@ -294,11 +294,11 @@ if __name__ == '__main__':
 		print('gbc', '\n')
 		gbc = GaussBayesClassify(trd, trc)
 		print(gbc, '\n')
-	#	print(gbc.predict(ted), '\n')
-	#	print(gbc.predict_soft(ted), '\n')
-	#	print(gbc.confusion(ted, tec), '\n')
-	#	print(gbc.auc(ted, tec), '\n')
-	#	print(gbc.roc(ted, tec), '\n')
+#		print(gbc.predict(ted), '\n')
+#		print(gbc.predict_soft(ted), '\n')
+#		print(gbc.confusion(ted, tec), '\n')
+#		print(gbc.auc(ted, tec), '\n')
+#		print(gbc.roc(ted, tec), '\n')
 		err = gbc.err(ted, tec)
 		print(err, '\n')
 		return err
@@ -308,7 +308,7 @@ if __name__ == '__main__':
 	print('avg_err')
 	print(avg_err)
 
-### DETERMINISTIC TESTING #######################################################
+## DETERMINISTIC TESTING #######################################################
 #
 #	data = [[float(val) for val in row[:-1]] for row in csv.reader(open('../classifier-data.csv'))]
 #	trd = np.asarray(data[0:40] + data[50:90] + data[100:140])

@@ -6,8 +6,12 @@
 import csv
 import math
 import numpy as np
+
 from base_classify import BaseClassify
 from classify import Classify
+from numpy import asarray as arr
+from numpy import asmatrix as mat
+from utils import filter_data, load_data_from_csv, test_randomly
 
 
 ################################################################################
@@ -333,226 +337,254 @@ class LogisticClassify(Classify):
 
 if __name__ == '__main__':
 
-	data = [[float(val) for val in row[:-1]] for row in csv.reader(open('../classifier-data.csv'))]
-	trd = np.asarray(data[0:40] + data[50:90] + data[100:140])
-	ted = np.asarray(data[40:50] + data[90:100] + data[140:150])
-	classes = [float(row[-1].lower()) for row in csv.reader(open('../classifier-data.csv'))]
-	trc = np.asarray(classes[0:40] + classes[50:90] + classes[100:140])
-	tec = np.asarray(classes[40:50] + classes[90:100] + classes[140:150])
+## RANDOM TESTING ##############################################################
 
-	btrd = trd[0:80,:]
-	bted = ted[0:20,:]
-	btrc = trc[0:80]
-	btec = tec[0:20]
+	data,classes = load_data_from_csv('../classifier-data.csv', 4, float)
+	data,classes = arr(data), arr(classes)
 
-	btrd2 = trd[40:120,:]
-	bted2 = ted[10:30,:]
-	btrc2 = trc[40:120]
-	btec2 = tec[10:30]
+	bd1,bc1 = filter_data(data, classes, lambda x,y: y == 2)
+	bd1,bc1 = np.array(bd1), np.array(bc1)
 
-	print('lc', '\n')
-	lc = LogisticClassify(trd, trc)
-	print(lc, '\n')
-	print(lc.predict(ted), '\n')
-	#print(lc.predict_soft(ted), '\n')
-	print(lc.confusion(ted, tec), '\n')
-	print(lc.err(ted, tec), '\n')
+	def test(trd, trc, ted, tec):
+		print('lc', '\n')
+		lc = LogisticClassify(trd, trc)
+		print(lc, '\n')
+	#	print(lc.predict(ted), '\n')
+	#	print(lc.predict_soft(ted), '\n')
+	#	print(lc.confusion(ted, tec), '\n')
+	#	print(lc.auc(ted, tec), '\n')
+	#	print(lc.roc(ted, tec), '\n')
+		err = lc.err(ted, tec)
+		print(err, '\n')
+		return err
 
-	print()
+	avg_err = test_randomly(data, classes, 0.8, test)
 
-	print('lc2', '\n')
-	lc2 = LogisticClassify(trd, trc, 'regress')
-	print(lc2, '\n')
-	print(lc2.predict(ted), '\n')
-	#print(lc2.predict_soft(ted), '\n')
-	print(lc2.confusion(ted, tec), '\n')
-	print(lc2.err(ted, tec), '\n')
+	print('avg_err')
+	print(avg_err)
 
-	print()
-
-	print('lc3', '\n')
-	lc3 = LogisticClassify(trd, trc, 'bayes')
-	print(lc3, '\n')
-	print(lc3.predict(ted), '\n')
-	#print(lc3.predict_soft(ted), '\n')
-	print(lc3.confusion(ted, tec), '\n')
-	print(lc3.err(ted, tec), '\n')
-
-	print()
-
-	print('ilc', '\n')
-	ilc = LogisticClassify(ted, tec)
-	print(ilc, '\n')
-	print(ilc.predict(trd), '\n')
-	#print(ilc.predict_soft(trd), '\n')
-	print(ilc.confusion(trd, trc), '\n')
-	print(ilc.err(trd, trc), '\n')
-
-	print()
-
-	print('ilc2', '\n')
-	ilc2 = LogisticClassify(ted, tec, 'regress')
-	print(ilc2, '\n')
-	print(ilc2.predict(trd), '\n')
-	#print(ilc2.predict_soft(trd), '\n')
-	print(ilc2.confusion(trd, trc), '\n')
-	print(ilc2.err(trd, trc), '\n')
-
-	print()
-
-	print('ilc3', '\n')
-	ilc3 = LogisticClassify(ted, tec, 'bayes')
-	print(ilc3, '\n')
-	print(ilc3.predict(trd), '\n')
-	#print(ilc3.predict_soft(trd), '\n')
-	print(ilc3.confusion(trd, trc), '\n')
-	print(ilc3.err(trd, trc), '\n')
-
-	print()
-
-	print('bc', '\n')
-	bc = LogisticClassify(btrd, btrc)
-	print(bc, '\n')
-	print(bc.predict(bted), '\n')
-	#print(bc.predict_soft(bted), '\n')
-	print(bc.auc(bted, btec), '\n')
-	print(bc.confusion(bted, btec), '\n')
-	print(bc.err(bted, btec), '\n')
-	print(bc.roc(bted, btec), '\n')
-
-	print()
-
-	print('bc2', '\n')
-	bc2 = LogisticClassify(btrd, btrc, 'regress')
-	print(bc2, '\n')
-	print(bc2.predict(bted), '\n')
-	#print(bc2.predict_soft(bted), '\n')
-	print(bc2.auc(bted, btec), '\n')
-	print(bc2.confusion(bted, btec), '\n')
-	print(bc2.err(bted, btec), '\n')
-	print(bc2.roc(bted, btec), '\n')
-
-	print()
-
-	print('bc3', '\n')
-	bc3 = LogisticClassify(btrd, btrc, 'bayes')
-	print(bc3, '\n')
-	print(bc3.predict(bted), '\n')
-	#print(bc3.predict_soft(bted), '\n')
-	print(bc3.auc(bted, btec), '\n')
-	print(bc3.confusion(bted, btec), '\n')
-	print(bc3.err(bted, btec), '\n')
-	print(bc3.roc(bted, btec), '\n')
-
-	print()
-
-	print('bc4', '\n')
-	bc4 = LogisticClassify(btrd2, btrc2)
-	print(bc4, '\n')
-	print(bc4.predict(bted2), '\n')
-	#print(bc4.predict_soft(bted2), '\n')
-	print(bc4.auc(bted2, btec2), '\n')
-	print(bc4.confusion(bted2, btec2), '\n')
-	print(bc4.err(bted2, btec2), '\n')
-	print(bc4.roc(bted2, btec2), '\n')
-
-	print()
-
-	print('bc5', '\n')
-	bc5 = LogisticClassify(btrd2, btrc2, 'regress')
-	print(bc5, '\n')
-	print(bc5.predict(bted2), '\n')
-	#print(bc5.predict_soft(bted2), '\n')
-	print(bc5.auc(bted2, btec2), '\n')
-	print(bc5.confusion(bted2, btec2), '\n')
-	print(bc5.err(bted2, btec2), '\n')
-	print(bc5.roc(bted2, btec2), '\n')
-
-	print()
-
-	print('bc6', '\n')
-	bc6 = LogisticClassify(btrd2, btrc2, 'bayes')
-	print(bc6, '\n')
-	print(bc6.predict(bted2), '\n')
-	#print(bc6.predict_soft(bted2), '\n')
-	print(bc6.auc(bted2, btec2), '\n')
-	print(bc6.confusion(bted2, btec2), '\n')
-	print(bc6.err(bted2, btec2), '\n')
-	print(bc6.roc(bted2, btec2), '\n')
-
-	print()
-
-	print('ibc', '\n')
-	ibc = LogisticClassify(bted, btec)
-	print(ibc, '\n')
-	print(ibc.predict(btrd), '\n')
-	#print(ibc.predict_soft(btrd), '\n')
-	print(ibc.auc(btrd, btrc), '\n')
-	print(ibc.confusion(btrd, btrc), '\n')
-	print(ibc.err(btrd, btrc), '\n')
-	print(ibc.roc(btrd, btrc), '\n')
-
-	print()
-
-	print('ibc2', '\n')
-	ibc2 = LogisticClassify(bted, btec, 'regress')
-	print(ibc2, '\n')
-	print(ibc2.predict(btrd), '\n')
-	#print(ibc2.predict_soft(btrd), '\n')
-	print(ibc2.auc(btrd, btrc), '\n')
-	print(ibc2.confusion(btrd, btrc), '\n')
-	print(ibc2.err(btrd, btrc), '\n')
-	print(ibc2.roc(btrd, btrc), '\n')
-
-	print()
-
-	print('ibc3', '\n')
-	ibc3 = LogisticClassify(bted, btec, 'bayes')
-	print(ibc3, '\n')
-	print(ibc3.predict(btrd), '\n')
-	#print(ibc3.predict_soft(btrd), '\n')
-	print(ibc3.auc(btrd, btrc), '\n')
-	print(ibc3.confusion(btrd, btrc), '\n')
-	print(ibc3.err(btrd, btrc), '\n')
-	print(ibc3.roc(btrd, btrc), '\n')
-
-	print()
-
-	print('ibc4', '\n')
-	ibc4 = LogisticClassify(bted2, btec2)
-	print(ibc4, '\n')
-	print(ibc4.predict(btrd2), '\n')
-	#print(ibc4.predict_soft(btrd2), '\n')
-	print(ibc4.auc(btrd2, btrc2), '\n')
-	print(ibc4.confusion(btrd2, btrc2), '\n')
-	print(ibc4.err(btrd2, btrc2), '\n')
-	print(ibc4.roc(btrd2, btrc2), '\n')
-
-	print()
-
-	print('ibc5', '\n')
-	ibc5 = LogisticClassify(bted2, btec2, 'regress')
-	print(ibc5, '\n')
-	print(ibc5.predict(btrd2), '\n')
-	#print(ibc5.predict_soft(btrd2), '\n')
-	print(ibc5.auc(btrd2, btrc2), '\n')
-	print(ibc5.confusion(btrd2, btrc2), '\n')
-	print(ibc5.err(btrd2, btrc2), '\n')
-	print(ibc5.roc(btrd2, btrc2), '\n')
-
-	print()
-
-	print('ibc6', '\n')
-	ibc6 = LogisticClassify(btrd2, btrc2, 'bayes')
-	print(ibc6, '\n')
-	print(ibc6.predict(btrd2), '\n')
-	#print(ibc6.predict_soft(btrd2), '\n')
-	print(ibc6.auc(btrd2, btrc2), '\n')
-	print(ibc6.confusion(btrd2, btrc2), '\n')
-	print(ibc6.err(btrd2, btrc2), '\n')
-	print(ibc6.roc(btrd2, btrc2), '\n')
-
-
+## DETERMINISTIC TESTING #######################################################
+#
+#	data = [[float(val) for val in row[:-1]] for row in csv.reader(open('../classifier-data.csv'))]
+#	trd = np.asarray(data[0:40] + data[50:90] + data[100:140])
+#	ted = np.asarray(data[40:50] + data[90:100] + data[140:150])
+#	classes = [float(row[-1].lower()) for row in csv.reader(open('../classifier-data.csv'))]
+#	trc = np.asarray(classes[0:40] + classes[50:90] + classes[100:140])
+#	tec = np.asarray(classes[40:50] + classes[90:100] + classes[140:150])
+#
+#	btrd = trd[0:80,:]
+#	bted = ted[0:20,:]
+#	btrc = trc[0:80]
+#	btec = tec[0:20]
+#
+#	btrd2 = trd[40:120,:]
+#	bted2 = ted[10:30,:]
+#	btrc2 = trc[40:120]
+#	btec2 = tec[10:30]
+#
+#	print('lc', '\n')
+#	lc = LogisticClassify(trd, trc)
+#	print(lc, '\n')
+#	print(lc.predict(ted), '\n')
+#	#print(lc.predict_soft(ted), '\n')
+#	print(lc.confusion(ted, tec), '\n')
+#	print(lc.err(ted, tec), '\n')
+#
+#	print()
+#
+#	print('lc2', '\n')
+#	lc2 = LogisticClassify(trd, trc, 'regress')
+#	print(lc2, '\n')
+#	print(lc2.predict(ted), '\n')
+#	#print(lc2.predict_soft(ted), '\n')
+#	print(lc2.confusion(ted, tec), '\n')
+#	print(lc2.err(ted, tec), '\n')
+#
+#	print()
+#
+#	print('lc3', '\n')
+#	lc3 = LogisticClassify(trd, trc, 'bayes')
+#	print(lc3, '\n')
+#	print(lc3.predict(ted), '\n')
+#	#print(lc3.predict_soft(ted), '\n')
+#	print(lc3.confusion(ted, tec), '\n')
+#	print(lc3.err(ted, tec), '\n')
+#
+#	print()
+#
+#	print('ilc', '\n')
+#	ilc = LogisticClassify(ted, tec)
+#	print(ilc, '\n')
+#	print(ilc.predict(trd), '\n')
+#	#print(ilc.predict_soft(trd), '\n')
+#	print(ilc.confusion(trd, trc), '\n')
+#	print(ilc.err(trd, trc), '\n')
+#
+#	print()
+#
+#	print('ilc2', '\n')
+#	ilc2 = LogisticClassify(ted, tec, 'regress')
+#	print(ilc2, '\n')
+#	print(ilc2.predict(trd), '\n')
+#	#print(ilc2.predict_soft(trd), '\n')
+#	print(ilc2.confusion(trd, trc), '\n')
+#	print(ilc2.err(trd, trc), '\n')
+#
+#	print()
+#
+#	print('ilc3', '\n')
+#	ilc3 = LogisticClassify(ted, tec, 'bayes')
+#	print(ilc3, '\n')
+#	print(ilc3.predict(trd), '\n')
+#	#print(ilc3.predict_soft(trd), '\n')
+#	print(ilc3.confusion(trd, trc), '\n')
+#	print(ilc3.err(trd, trc), '\n')
+#
+#	print()
+#
+#	print('bc', '\n')
+#	bc = LogisticClassify(btrd, btrc)
+#	print(bc, '\n')
+#	print(bc.predict(bted), '\n')
+#	#print(bc.predict_soft(bted), '\n')
+#	print(bc.auc(bted, btec), '\n')
+#	print(bc.confusion(bted, btec), '\n')
+#	print(bc.err(bted, btec), '\n')
+#	print(bc.roc(bted, btec), '\n')
+#
+#	print()
+#
+#	print('bc2', '\n')
+#	bc2 = LogisticClassify(btrd, btrc, 'regress')
+#	print(bc2, '\n')
+#	print(bc2.predict(bted), '\n')
+#	#print(bc2.predict_soft(bted), '\n')
+#	print(bc2.auc(bted, btec), '\n')
+#	print(bc2.confusion(bted, btec), '\n')
+#	print(bc2.err(bted, btec), '\n')
+#	print(bc2.roc(bted, btec), '\n')
+#
+#	print()
+#
+#	print('bc3', '\n')
+#	bc3 = LogisticClassify(btrd, btrc, 'bayes')
+#	print(bc3, '\n')
+#	print(bc3.predict(bted), '\n')
+#	#print(bc3.predict_soft(bted), '\n')
+#	print(bc3.auc(bted, btec), '\n')
+#	print(bc3.confusion(bted, btec), '\n')
+#	print(bc3.err(bted, btec), '\n')
+#	print(bc3.roc(bted, btec), '\n')
+#
+#	print()
+#
+#	print('bc4', '\n')
+#	bc4 = LogisticClassify(btrd2, btrc2)
+#	print(bc4, '\n')
+#	print(bc4.predict(bted2), '\n')
+#	#print(bc4.predict_soft(bted2), '\n')
+#	print(bc4.auc(bted2, btec2), '\n')
+#	print(bc4.confusion(bted2, btec2), '\n')
+#	print(bc4.err(bted2, btec2), '\n')
+#	print(bc4.roc(bted2, btec2), '\n')
+#
+#	print()
+#
+#	print('bc5', '\n')
+#	bc5 = LogisticClassify(btrd2, btrc2, 'regress')
+#	print(bc5, '\n')
+#	print(bc5.predict(bted2), '\n')
+#	#print(bc5.predict_soft(bted2), '\n')
+#	print(bc5.auc(bted2, btec2), '\n')
+#	print(bc5.confusion(bted2, btec2), '\n')
+#	print(bc5.err(bted2, btec2), '\n')
+#	print(bc5.roc(bted2, btec2), '\n')
+#
+#	print()
+#
+#	print('bc6', '\n')
+#	bc6 = LogisticClassify(btrd2, btrc2, 'bayes')
+#	print(bc6, '\n')
+#	print(bc6.predict(bted2), '\n')
+#	#print(bc6.predict_soft(bted2), '\n')
+#	print(bc6.auc(bted2, btec2), '\n')
+#	print(bc6.confusion(bted2, btec2), '\n')
+#	print(bc6.err(bted2, btec2), '\n')
+#	print(bc6.roc(bted2, btec2), '\n')
+#
+#	print()
+#
+#	print('ibc', '\n')
+#	ibc = LogisticClassify(bted, btec)
+#	print(ibc, '\n')
+#	print(ibc.predict(btrd), '\n')
+#	#print(ibc.predict_soft(btrd), '\n')
+#	print(ibc.auc(btrd, btrc), '\n')
+#	print(ibc.confusion(btrd, btrc), '\n')
+#	print(ibc.err(btrd, btrc), '\n')
+#	print(ibc.roc(btrd, btrc), '\n')
+#
+#	print()
+#
+#	print('ibc2', '\n')
+#	ibc2 = LogisticClassify(bted, btec, 'regress')
+#	print(ibc2, '\n')
+#	print(ibc2.predict(btrd), '\n')
+#	#print(ibc2.predict_soft(btrd), '\n')
+#	print(ibc2.auc(btrd, btrc), '\n')
+#	print(ibc2.confusion(btrd, btrc), '\n')
+#	print(ibc2.err(btrd, btrc), '\n')
+#	print(ibc2.roc(btrd, btrc), '\n')
+#
+#	print()
+#
+#	print('ibc3', '\n')
+#	ibc3 = LogisticClassify(bted, btec, 'bayes')
+#	print(ibc3, '\n')
+#	print(ibc3.predict(btrd), '\n')
+#	#print(ibc3.predict_soft(btrd), '\n')
+#	print(ibc3.auc(btrd, btrc), '\n')
+#	print(ibc3.confusion(btrd, btrc), '\n')
+#	print(ibc3.err(btrd, btrc), '\n')
+#	print(ibc3.roc(btrd, btrc), '\n')
+#
+#	print()
+#
+#	print('ibc4', '\n')
+#	ibc4 = LogisticClassify(bted2, btec2)
+#	print(ibc4, '\n')
+#	print(ibc4.predict(btrd2), '\n')
+#	#print(ibc4.predict_soft(btrd2), '\n')
+#	print(ibc4.auc(btrd2, btrc2), '\n')
+#	print(ibc4.confusion(btrd2, btrc2), '\n')
+#	print(ibc4.err(btrd2, btrc2), '\n')
+#	print(ibc4.roc(btrd2, btrc2), '\n')
+#
+#	print()
+#
+#	print('ibc5', '\n')
+#	ibc5 = LogisticClassify(bted2, btec2, 'regress')
+#	print(ibc5, '\n')
+#	print(ibc5.predict(btrd2), '\n')
+#	#print(ibc5.predict_soft(btrd2), '\n')
+#	print(ibc5.auc(btrd2, btrc2), '\n')
+#	print(ibc5.confusion(btrd2, btrc2), '\n')
+#	print(ibc5.err(btrd2, btrc2), '\n')
+#	print(ibc5.roc(btrd2, btrc2), '\n')
+#
+#	print()
+#
+#	print('ibc6', '\n')
+#	ibc6 = LogisticClassify(btrd2, btrc2, 'bayes')
+#	print(ibc6, '\n')
+#	print(ibc6.predict(btrd2), '\n')
+#	#print(ibc6.predict_soft(btrd2), '\n')
+#	print(ibc6.auc(btrd2, btrc2), '\n')
+#	print(ibc6.confusion(btrd2, btrc2), '\n')
+#	print(ibc6.err(btrd2, btrc2), '\n')
+#	print(ibc6.roc(btrd2, btrc2), '\n')
+#
+#
 ################################################################################
 ################################################################################
 ################################################################################
