@@ -4,6 +4,7 @@
 
 
 import numpy as np
+import random
 
 from csv import reader
 
@@ -84,6 +85,49 @@ def filter_data(data, labels, filter_func):
 	return filtered_data,filtered_labels
 
 
+def test_randomly(data, labels, mix=0.8, test=lambda x: 1.0, *args):
+	"""
+	Function that performs random tests using data/labels.
+
+	Parameters
+	----------
+	data : numpy array
+		N x M array of data points used for training/testing learner.
+		N = number of data; M = number of features.
+	labels : numpy array
+		1 x N array of class/regression labels used for training/testing learner.
+	mix : float
+		The percentage of data to use for training (1 - mix = percentage of data
+		used for testing).
+	test : function object
+		A function that takes at least four arguments (arrays containing data/labels
+		for testing/training) and performs tests. This function should return an
+		error value for one experiment.
+	args : mixed
+		Any additional arguments needed for testing.
+
+	Returns
+	-------
+	float
+		Average error value of all tests performed.
+	"""
+	start = 0
+	end = len(data)
+
+	avg_err = 0
+
+	for i in range(start, end):
+		indexes = range(end)
+		train_indexes = random.sample(indexes, int(mix * end))
+		test_indexes = list(set(indexes) - set(train_indexes))
+
+		trd,trc = data[train_indexes], labels[train_indexes]
+		ted,tec = data[test_indexes], labels[test_indexes]
+		avg_err += test(trd, trc, ted, tec, *args)
+
+	return avg_err / end
+
+
 def to_1_of_k(Y, values=None):
 	"""
 	Function that converts Y into discrete valued matrix;
@@ -122,7 +166,7 @@ def to_1_of_k(Y, values=None):
 
 def from_1_of_k(Y, values=None):
 	"""
-	Funciton that converts Y from 1-of-k rep back to single col/row form.
+	Function that converts Y from 1-of-k rep back to single col/row form.
 
 	Parameters
 	----------
@@ -137,6 +181,36 @@ def from_1_of_k(Y, values=None):
 		Y in single row/col form.
 	"""
 	return Y.argmax(1) if not values else np.atleast_2d([values[i] for i in Y.argmax(1)]).T
+
+
+def to_index(Y, values=None):
+	"""
+	Function that converts discrete value Y into [0 .. K - 1] (index) 
+	representation; i.e.: to_index([4 4 1 1 2 2], [1 2 4]) = [2 2 0 0 1 1].
+
+	Parameters
+	----------
+	Y : array
+		1 x N (N x 1) array of values to be converted.
+	values : list (optional)
+		List that specifices the value/index mapping to use for conversion.
+
+	Returns
+	-------
+	idx : array
+		Array that contains indexes instead of values.
+	"""
+	n,d = np.matrix(Y).shape
+
+	assert min(n,d) == 1
+	values = values if values else list(np.unique(Y))
+	C = len(values)
+	flat_Y = Y.flatten()
+
+	idx = []
+	for v in Y:
+		idx.append(values.index(v))
+	return np.array(idx)
 
 
 ################################################################################

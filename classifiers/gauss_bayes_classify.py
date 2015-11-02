@@ -11,7 +11,7 @@ import random
 from base_classify import BaseClassify
 from classify import Classify
 from numpy import asarray as arr
-from utils import load_data_from_csv
+from utils import filter_data, load_data_from_csv, test_randomly
 
 
 ################################################################################
@@ -281,28 +281,25 @@ if __name__ == '__main__':
 	data,classes = load_data_from_csv('../classifier-data.csv', 4, float)
 	data,classes = arr(data), arr(classes)
 
-	start = 0
-	end = len(data)
+	bd1,bc1 = filter_data(data, classes, lambda x,y: y == 2)
+	bd1,bc1 = np.array(bd1), np.array(bc1)
 
-	avg_err = 0
-
-	for i in range(start, end):
-		indexes = range(end)
-		train_indexes = random.sample(indexes, int(.8 * end))
-		test_indexes = list(set(indexes) - set(train_indexes))
-
-		trd,trc = data[train_indexes], classes[train_indexes]
-		ted,tec = data[test_indexes], classes[test_indexes]
+	def test(trd, trc, ted, tec):
 		print('gbc', '\n')
 		gbc = GaussBayesClassify(trd, trc)
 		print(gbc, '\n')
 	#	print(gbc.predict(ted), '\n')
 	#	print(gbc.predict_soft(ted), '\n')
 	#	print(gbc.confusion(ted, tec), '\n')
-		print(gbc.err(ted, tec), '\n')
-		avg_err += gbc.err(ted, tec)
+	#	print(gbc.auc(ted, tec), '\n')
+	#	print(gbc.roc(ted, tec), '\n')
+		err = gbc.err(ted, tec)
+		print(err, '\n')
+		return err
 
-	print(avg_err / end)
+	avg_err = test_randomly(data, classes, 0.8, test)
+
+	print(avg_err)
 
 ### DETERMINISTIC TESTING #######################################################
 #
