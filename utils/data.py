@@ -10,6 +10,7 @@ from csv import reader
 from numpy import asarray as arr
 from numpy import asmatrix as mat
 from numpy import atleast_2d as twod
+from scipy.linalg import sqrtm
 
 
 ################################################################################
@@ -107,7 +108,11 @@ def bootstrap_data(X, Y, n_boot):
 	-------
 	(array,array)
 		Tuple containing samples from X and Y.
+
+	TODO: test more
 	"""
+	Y = Y.flatten()
+
 	nx,dx = twod(X).shape
 	idx = np.floor(np.random.rand(n_boot) * nx).astype(int)
 	X = X[idx,:]
@@ -118,6 +123,244 @@ def bootstrap_data(X, Y, n_boot):
 	Y = Y[idx]
 
 	return (X,Y)
+
+
+def data_GMM(N, C, D=2):
+	"""
+	Sample data from a Gaussian mixture model.
+
+	Parameters
+	----------
+	N : int
+		Number of data to be drawn from a mixture of Gaussians.
+	C : int
+		Number of clusters.
+	D : int
+		Number of dimensions.
+
+	Returns
+	-------
+
+	TODO: fix
+	"""
+	pi = np.zeros(C)
+	for c in range(C):
+		pi[c] = gamrand(10, 0.5)
+	pi = pi / np.sum(pi)
+	cpi = np.cumsum(pi)
+
+	rho = np.random.rand(D, D)
+	rho = rho + twod(rho).T
+	rho = rho + D * np.eye(D)
+	rho = sqrtm(rho)
+	
+	mu = mat(np.random.randn(c, D)) * mat(rho)
+
+	ccov = []
+	for i in range(C):
+		tmp = np.random.rand(D, D)
+		tmp = tmp + tmp.T
+		tmp = 0.5 * (tmp + D * np.eye(D))
+		ccov.append(sqrtm(tmp))
+
+	p = np.random.rand(N)
+	Z = np.ones(N)
+
+	for c in range(C - 1):
+		Z[p > cpi[c]] = c + 1
+
+	X = mu[Z,:]
+
+	for c in range(C):
+		X[Z == c,:] = X[Z == c,:] + mat(np.random.randn(np.sum(Z == c), D)) * mat(ccov[c])
+
+	return X,Z
+
+
+def gamrand(alpha, lmbda):
+	"""
+	Gamma(alpha, lmbda) generator using the Marsaglia and Tsang 
+	method (algorithm 4.33).
+
+	Parameters
+	----------
+	alpha : scalar
+	lambda : scalar
+	
+	Returns
+	-------
+	scalar
+
+	TODO: fix
+	"""
+	if alpha > 1:
+		d = alpha - 1 / 3
+		c = 1 / np.sqrt(9 * d)
+		flag = 1
+
+		while flag:
+			Z = np.random.randn()	
+
+			if Z > 1 / c:
+				V = (1 + c * Z)**3
+				U = np.random.rand()
+
+				flag = np.log(U) > (0.5 * Z**2 + d - d * V + d * np.log(V))
+
+		return d * V / lmbda
+
+	else:
+		x = gamrand(alpha + 1, lmbda)
+		return x * np.random.rand()**(1 / alpha)
+
+
+def whiten(X, mu=None, sig=None):
+	"""
+	Function that whitens X to be zero mean, uncorrelated, and unit
+	variance. For example: Xtr,m,s = whiten(Xtr); Xte = whiten(Xte, m, s)
+	(whitens training data and changes test data to match)
+
+	Parameters
+	----------
+	X : numpy array
+	mu : numpy array
+		Transform value (mean).
+	sig : numpy array
+		Transform value (covariance matrix).
+
+	Returns
+	-------
+	to_return : numpy array or tuple
+		Function has multiple return values: if mu and sig are specified, whitened
+		X is returned, otherwise, whitened X and mu/sig are returned in a tuple
+		(function will return always return X, and will return mu and or sig if
+		one/both are unspecified).
+
+	TODO: test more
+	"""
+	to_return = ()
+	if type(mu) is type(None):			# because numpy complains about the truth values of arrays
+		mu = np.mean(X, axis=0)
+		to_return += (mu,)
+
+	if type(sig) is type(None):			# because numpy complains about the truth values of arrays
+		C = np.cov(X, rowvar=0)
+		U,S,V = np.linalg.svd(C)
+		sig = U * np.diag(1 / np.sqrt(np.diag(S)))
+		to_return += (sig,)
+
+	X = X - mu
+	X = X.dot(sig)
+
+	return X if len(to_return) == 0 else (X,) + to_return
+
+
+def split_data(X, Y, train_fraction):
+	"""
+	Split data into training and test data.
+
+	Parameters
+	----------
+	X : numpy array
+		N x M array of data to split.
+	Y : numpy arra
+		1 x N array of labels that correspond to data in X.
+	train_fraction : float
+		Fraction of data to use for training.
+
+	Returns
+	-------
+	to_return : (Xtr,Xte,Ytr,Yte) or (Xtr,Xte)
+		A tuple containing the following arrays (in order): training
+		data from X, testing data from X, training labels from Y
+		(if Y contains data), and testing labels from Y (if Y 
+		contains data).
+	"""
+	nx,dx = twod(X).shape
+	ne = round(train_fraction * nx)
+
+	Xtr,Xte = X[:ne,:], X[ne:,:]
+	to_return = (Xtr,Xte)
+
+	Y = arr(Y).flatten()
+	ny = len(Y)
+
+	if ny > 0:
+		assert ny == nx, 'split_data: X and Y must have the same length'
+		Ytr,Yte = Y[:ne], Y[ne:]
+		to_return += (Ytr,Yte)
+
+	return to_return
+
+
+def shuffle_data(X, Y):
+	"""
+	Shuffle data in X and Y.
+
+	Parameters
+	----------
+	X : numpy array
+		N x M array of data to shuffle.
+	Y : numpy arra
+		1 x N array of labels that correspond to data in X.
+
+	Returns
+	-------
+	X or (X,Y) : numpy array or tuple of arrays
+		Shuffled data (only returns X and Y if Y contains data).
+	
+	TODO: test more
+	"""
+	nx,dx = twod(X).shape
+	Y = arr(Y).flatten()
+	ny = len(Y)
+
+	pi = np.random.permutation(nx)
+	X = X[pi,:]
+
+	if ny > 0:
+		assert ny == nx, 'shuffle_data: X and Y must have the same length'
+		Y = Y[pi]
+		return X,Y
+
+	return X
+
+
+def rescale(X, mu=None, scale=None):
+	"""
+	Shifts and scales data to be zero mean, unit variance in each dimension.
+
+	Parameters
+	----------
+	X : numpy array
+		N x M array that contains data to rescale.
+	mu : numpy array
+		1 x M array of means.
+	scale : numpy array
+		1 x M array of variances.
+
+	Returns
+	-------
+	to_return : (X, mu, scale), (X, mu/scale), X
+		If mu and/or scale aren't specified, the function returns
+		the mu/and or scale used in a tuple with rescaled X. If mu 
+		and scale are specified, only X is returned.
+
+	TODO: test more
+	"""
+	to_return = ()
+	if type(mu) is type(None):				# because numpy complains about the truth values of arrays
+		mu = np.mean(X, axis=0)
+		to_return += (mu,)
+
+	if type(scale) is type(None):			# because numpy complains about the truth values of arrays
+		scale = 1 / np.sqrt(np.var(X, axis=0))
+		to_return += (scale,)
+
+	X -= mu
+	X *= scale
+
+	return X if len(to_return) == 0 else (X,) + to_return
 
 
 ################################################################################
@@ -132,27 +375,89 @@ def bootstrap_data(X, Y, n_boot):
 
 if __name__ == '__main__':
 
+	data,classes = load_data_from_csv('../classifier-data.csv', 4, float)
+	data,classes = arr(data), arr(classes)
 
-	print('testing bootstrap_data')
+#	print('testing bootstrap_data')
+#	print()
+#
+#	n,d = 100, 5
+#	n_boot = 30
+#
+#	X = arr([np.random.rand(d) * 25 for i in range(n)])
+#	Y = np.floor(np.random.rand(n) * 3)
+#	data,classes = bootstrap_data(X, Y, n_boot)
+#
+#	assert len(data) == len(classes) == n_boot
+#	assert d == twod(X).shape[1]
+#
+#	print('data')
+#	print(data)
+#	print('classes')
+#	print(classes)
+#
+#	print()
+#	print()
+#
+#	print('testing whiten')
+#	print()
+#
+#	for i in range(1, 4):
+#		print('i =', i)
+#
+#		Xtr,Xte,Ytr,Yte = cross_validate(data, classes, 3, i)
+#		X,mu,sig = whiten(Xtr)
+#
+#		print('X')
+#		print(X)
+#		print('mu')
+#		print(mu)
+#		print('sig')
+#		print(sig)
+#
+#		print()
+#
+#	print('testing split_data')
+#	print()
+#
+#	Xtr,Xte,Ytr,Yte = split_data(data, classes, 0.4)
+#
+#	print('Xtr')
+#	print(Xtr)
+#	print('len(Xtr)')
+#	print(len(Xtr))
+#	print('Xte')
+#	print(Xte)
+#	print('len(Xte)')
+#	print(len(Xte))
+#	print('Ytr')
+#	print(Ytr)
+#	print('len(Ytr)')
+#	print(len(Ytr))
+#	print('Yte')
+#	print(Yte)
+#	print('len(Yte)')
+#	print(len(Yte))
+#
+#	print('testing shuffle_data')
+#	print()
+#
+#	X,Y = shuffle_data(data, classes)
+#	print('X')
+#	print(X)
+#	print('Y')
+#	print(Y)
+
+	print('testing rescale')
 	print()
 
-	n,d = 100, 5
-	n_boot = 30
-
-	X = arr([np.random.rand(d) * 25 for i in range(n)])
-	Y = np.floor(np.random.rand(n) * 3)
-	data,classes = bootstrap_data(X, Y, n_boot)
-
-	assert len(data) == len(classes) == n_boot
-	assert d == twod(X).shape[1]
-
-	print('data')
-	print(data)
-	print('classes')
-	print(classes)
-
-	print()
-	print()
+	X,mu,scale = rescale(data)
+	print('X')
+	print(X)
+	print('mu')
+	print(mu)
+	print('scale')
+	print(scale)
 
 
 ################################################################################
