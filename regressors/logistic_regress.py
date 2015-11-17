@@ -6,11 +6,12 @@
 import csv
 import math
 import numpy as np
+
 from functools import reduce
 from numpy import asmatrix as mat
 from numpy import asarray as arr
 from regress import Regress
-from sklearn.preprocessing import normalize
+from utils.data import rescale
 
 
 ################################################################################
@@ -163,6 +164,10 @@ if __name__ == '__main__':
 
 	np.set_printoptions(linewidth=200)
 
+## RANDOM TESTING ##############################################################
+
+## DETERMINISTIC TESTING #######################################################
+
 	data = [[float(val) for val in row[:-1]] for row in csv.reader(open('../regressor-data.csv'))]
 	trd = np.asarray(data[0:40] + data[50:90] + data[100:140])
 	ted = np.asarray(data[40:50] + data[90:100] + data[140:150])
@@ -170,6 +175,7 @@ if __name__ == '__main__':
 	ted2 = np.asarray(data[180:200] + data[230:250] + data[280:300])
 	trd3 = np.asarray(data[300:320] + data[350:370] + data[400:420])
 	ted3 = np.asarray(data[320:350] + data[370:400] + data[420:450])
+
 	predictions = [float(row[-1].lower()) for row in csv.reader(open('../regressor-data.csv'))]
 	trp = np.asarray(predictions[0:40] + predictions[50:90] + predictions[100:140])
 	tep = np.asarray(predictions[40:50] + predictions[90:100] + predictions[140:150])
@@ -178,26 +184,8 @@ if __name__ == '__main__':
 	trp3 = np.asarray(predictions[300:320] + predictions[350:370] + predictions[400:420])
 	tep3 = np.asarray(predictions[320:350] + predictions[370:400] + predictions[420:450])
 
-	trdmu = np.mean(trd, axis=0)
-	tedmu = np.mean(ted, axis=0)
-	trdmax = np.max(trd, axis=0)
-	tedmax = np.max(ted, axis=0)
-
-	print(trdmu)
-	print(tedmu)
-	print(trdmax)
-	print(tedmax)
-
-	trd = trd - trdmu
-	ted = ted - tedmu
-	trd = trd / trdmax
-	ted = ted / tedmax
-
-	print(trd)
-	print(ted)
-
-	trd = normalize(trd, axis=1)
-	ted = normalize(ted, axis=1)
+	trd,mu,scale = rescale(trd)
+	ted,mu,scale = rescale(ted)
 
 	print(trd)
 	print(ted)
@@ -209,17 +197,6 @@ if __name__ == '__main__':
 	print(lr.mae(ted, tep), '\n')
 	print(lr.mse(ted, tep), '\n')
 	print(lr.rmse(ted, tep), '\n')
-
-#	print()
-#
-#	print('lr', '\n')
-#	lr = LogisticRegress(trd2, trp2)
-#	print(lr, '\n')
-#	print(lr.predict(ted2), '\n')
-#	print(lr.mae(ted2, tep2), '\n')
-#	print(lr.mse(ted2, tep2), '\n')
-#	print(lr.rmse(ted2, tep2), '\n')
-
 
 
 ################################################################################

@@ -14,6 +14,7 @@ from numpy import asmatrix as mat
 from numpy import atleast_2d as twod
 from numpy import concatenate as concat
 from numpy import column_stack as cols
+from utils.data import rescale
 from utils.utils import from_1_of_k, to_1_of_k
 
 
@@ -302,7 +303,7 @@ class NNetClassify(Classify):
 		constant_feat = np.ones((mat(X_in).shape[0],1)).flatten()	# constant feature
 		# compute linear combination of inputs
 		A = [arr([1])]
-		Z = [concat((constant_feat, X_in), axis=1)]
+		Z = [concat((constant_feat, X_in))]
 
 		for l in range(1, L):
 			A.append(Z[l - 1].dot(wts[l - 1].T))					# compute linear combination of previous layer
@@ -338,8 +339,11 @@ if __name__ == '__main__':
 	trc = np.asarray(classes[0:40] + classes[50:90] + classes[100:140])
 	tec = np.asarray(classes[40:50] + classes[90:100] + classes[140:150])
 
+	trd,mu,scale = rescale(trd)
+	ted,mu,scale = rescale(ted)
+
 	print('nc')
-	nc = NNetClassify(trd, trc, [4,5,5,5,5,5,3], init='random', max_steps=5000, activation='htangent', tolerance=1e-16)
+	nc = NNetClassify(trd, trc, [4,5,5,5,3], init='random', max_steps=5000, activation='htangent')
 	print(nc.get_weights())
 	print(nc)
 	print(nc.predict(ted))

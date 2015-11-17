@@ -107,6 +107,27 @@ def to_index(Y, values=None):
 	return np.array(idx)
 
 
+def from_index(Y, values):
+	"""
+	Convert index-valued Y into discrete representation specified by values
+	in values.
+
+	Parameters
+	----------
+	Y : numpy array
+		1 x N (or N x 1) numpy array of indices.
+	values : numpy array
+		1 x max(Y) array of values for conversion.
+
+	Returns
+	-------
+	discrete_Y : numpy array
+		1 x N (or N x 1) numpy array of discrete values.
+	"""
+	discrete_Y = values[Y]
+	return discrete_Y
+
+
 ################################################################################
 ################################################################################
 ################################################################################
