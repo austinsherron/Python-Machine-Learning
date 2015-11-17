@@ -243,16 +243,42 @@ class NNetClassify(Classify):
 		self.activation = method
 
 
-	def set_classes(self):
-		pass
+	def set_classes(self, classes):
+		"""
+		Set classes of the classifier. 
+
+		Parameters
+		----------
+		classes : list
+		"""
+		if type(classes) is not list or len(classes) == 0:
+			raise TypeError('NNetClassify.set_classes: classes should be a list with a length of at least 1')
+		self.classes = classes
 
 
-	def set_layers(self):
-		pass
+	def set_layers(self, sizes, init='random'):
+		"""
+		Set layers sizes to sizes.
+
+		Parameters
+		----------
+		sizes : [int]
+			List containing sizes.
+		init : str (optional)
+			Weight initialization method.
+		"""
+		self.init_weights(sizes, init, None, None)
 
 
-	def set_weights(self):
-		pass
+	def set_weights(self, wts):
+		"""
+		Set weights of the classifier.
+
+		Parameters
+		----------
+		wts : list
+		"""
+		self.wts = wts
 
 
 	def init_weights(self, sizes, init, X, Y):
@@ -277,7 +303,7 @@ class NNetClassify(Classify):
 
 
 	def get_classes(self):
-		pass
+		return self.classes
 
 
 	def get_layers(self):
