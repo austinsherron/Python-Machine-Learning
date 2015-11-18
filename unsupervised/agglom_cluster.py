@@ -3,7 +3,6 @@
 ################################################################################
 
 
-import data
 import matplotlib.pyplot as plt
 import numpy as np
 import random
@@ -11,6 +10,7 @@ import random
 from numpy import asarray as arr
 from numpy import asmatrix as mat
 from numpy import atleast_2d as twod
+from utils import data
 
 
 ################################################################################

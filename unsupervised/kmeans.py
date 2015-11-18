@@ -3,7 +3,6 @@
 ################################################################################
 
 
-import data
 import matplotlib.pyplot as plt
 import numpy as np
 import random
@@ -11,6 +10,8 @@ import random
 from numpy import asarray as arr
 from numpy import asmatrix as mat
 from numpy import atleast_2d as twod
+from utils import data
+from utils.utils import optional_return
 
 
 ################################################################################
@@ -42,15 +43,13 @@ def kmeans(X, K, init='random', max_iter=100, do_plot=False, to_return=[1, 0, 0]
 		Plot 2D data?
 	to_return : [bool]
 		Array of bools that specifies which values to return. The bool
-		at to_return[0] indicates whether c should be returned. The bool
-		at to_return[1] indicates whether sumd should be returned.
-		z will always be returned.
+		at to_return[0] indicates whether z should be returned; the bool
+		at to_return[1] indicates whether c should be returned, etc.
 
 	Returns
 	-------
 	z : numpy array
-		N x 1 array containing cluster numbers of data at indices
-		in X.
+		N x 1 array containing cluster numbers of data at indices in X.
 	c : numpy array (optional)
 		K x M array of cluster centers.
 	sumd : scalar (optional)
@@ -66,17 +65,17 @@ def kmeans(X, K, init='random', max_iter=100, do_plot=False, to_return=[1, 0, 0]
 			pi = np.random.permutation(n)
 			c = X[pi[0:K],:]
 		elif init == 'farthest':
-			c = __k_init(X, K, True)
+			c = k_init(X, K, True)
 		elif init == 'k++':
-			c = __k_init(X, K, False)
+			c = k_init(X, K, False)
 		else:
-			raise ValueError('KMeans.__init__: value for "init" ( ' + init +  ') is invalid')
+			raise ValueError('kmeans: value for "init" ( ' + init +  ') is invalid')
 	else:
 		c = init
 
 	z,c,sumd = __optimize(X, n, K, c,  max_iter)
 
-	return __optional_return(to_return, z, c, sumd)
+	return optional_return(to_return, z - 1, c, sumd)
 
 
 def __optimize(X, n, K, c, max_iter):
@@ -110,7 +109,7 @@ def __optimize(X, n, K, c, max_iter):
 	return z,c,sumd
 			
 
-def __k_init(X, K, determ):
+def k_init(X, K, determ):
 	"""
 	Distance based initialization. Randomly choose a start point, then:
 	if determ == True: choose point farthest from the clusters chosen so
@@ -152,11 +151,6 @@ def __k_init(X, K, determ):
 	return clusters
 
 
-def __optional_return(to_return, *args):
-	d = zip(to_return, args)
-	return tuple((map(lambda x: x[1], filter(lambda x: x[0], d))))
-
-
 ################################################################################
 ################################################################################
 ################################################################################
@@ -172,7 +166,7 @@ if __name__ == '__main__':
 	X,Y = data.load_data_from_csv('../classifier-data.csv', 4, float)
 	X,Y = arr(X), arr(Y)
 
-	z = kmeans(X, 5)
+	z = kmeans(X, 10)
 	print('z')
 	print(z)
 

@@ -128,6 +128,33 @@ def from_index(Y, values):
 	return discrete_Y
 
 
+def optional_return(to_return, *args):
+	"""
+	Helper that allows optional return of arguments.
+
+	Parameters
+	----------
+	to_return : [bool]
+		The bool at each index indicates whether the value at that index in 
+		args should be returned; e.g.: if to_return[0] == True return args[0].
+	args : mixed
+		All possible return values.
+
+	Returns
+	-------
+	d : tuple (or single value)
+		Tuple of returned arguments or single return value if there is only one
+		return value.
+	"""
+	d = zip(to_return, args)
+	d = tuple((map(lambda x: x[1], filter(lambda x: x[0], d))))
+
+	if len(d) == 1:
+		return d[0]
+	else:
+		return d
+
+
 ################################################################################
 ################################################################################
 ################################################################################
