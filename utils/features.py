@@ -267,11 +267,11 @@ def fpoly_pair(X, degree, use_constant=True):
 	-------
 	Xext : numpy array
 
-	TODO: finish
+	TODO: test more
 	"""
 	m,n = twod(X).shape
 
-	npoly = np.ceil((n**(degree + 1) - 1) / (n - 1))			# floor to fix possible roundoff error
+	npoly = np.ceil((n**(degree + 1) - 1) / (n - 1))			# ceil to fix possible roundoff error
 	if use_constant:
 		Xext = np.zeros((m,npoly))
 		Xext[:,0] = 1
@@ -291,10 +291,29 @@ def fpoly_pair(X, degree, use_constant=True):
 		for i in range(twod(Z).shape[2]):
 			X2 = cols((X2,X * Z[:,:,i]))
 		X2 = X2[:,1:]
-		idx = np.where((twod(arr([range(1,5)])).T >= arr([range(1,5)])).ravel())[0]
+		idx = np.where((twod(arr(range(1,n + 1))).T >= arr(range(1,n + 1))).T.ravel())[0]
 		K = len(idx)
 		Xext[:,k:k + K] = X2[:,idx]
 		return Xext[:,0:k + K]
+
+	for p in range(degree):
+		
+		# workaround to make up for numpy's lack of bsxfun
+		if type(Xcur) is int:
+			Xcur = X * Xcur
+		else:
+			new_Xcur = np.zeros((m,1))
+			for i in range(Xcur.shape[2]):
+				new_Xcur = cols((new_Xcur, X * Xcur[:,:,i]))
+			Xcur = new_Xcur[:,1:]
+
+		Xcur = Xcur.reshape((m,np.size(Xcur) / m))
+		K = Xcur.shape[1]
+		Xext[:,k:k + K] = Xcur
+		k = k + K
+		Xcur = Xcur.reshape((m,1,K))
+
+	return Xext
 
 
 def fproject(X, K, proj=None):
@@ -417,17 +436,16 @@ def fsvd(X, K, T=None):
 
 if __name__ == '__main__':
 
-	np.set_printoptions(linewidth=300, threshold=10000)
+	np.set_printoptions(linewidth=300, threshold=10000, precision=2)
 
 	data,classes = load_data_from_csv('../classifier-data.csv', 4, float)
 	data,classes = arr(data), arr(classes)
 
-	X,T = fsvd(data, 3)
-	X = fsvd(data, 3, T)
+	X = fpoly_pair(data, 5)
 	print('X')
 	print(X)
-	print('T')
-	print(T)
+	print('X.shape')
+	print(X.shape)
 
 
 ################################################################################
