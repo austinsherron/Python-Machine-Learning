@@ -6,10 +6,10 @@
 import csv
 import math
 import numpy as np
+
 from numpy import asarray as arr
 from numpy import asmatrix as mat
 from regress import Regress
-
 from knn_regress import KNNRegress
 from linear_regress import LinearRegress
 from logistic_regress import LogisticRegress
@@ -33,15 +33,21 @@ class BaggedRegress(Regress):
 		Constructor for BaggedRegress. Regressor uses
 		n learners of type 'base'.
 
-		Args:
-			base = batch regressor object type, i.e. 'LinearRegress'
-			n = number of regressors to use
-			X = N x M numpy array; N = number of data points, M = number
-			  of features
-			Y = 1 x N numpy array; N = number of values relating to
-			  data points in X
-			**kwargs = any number of additional arguments need for training
-			  learners of type 'base'
+		Parameters
+		----------
+		base : regressor object
+			Batch regressor object type, i.e. 'LinearRegress'.
+		n : int 
+			Number of regressors to use.
+		X : numpy array 
+			N x M numpy array; N = number of data points, M = number of 
+			features.
+		Y : numpy array 
+			1 x N numpy array; N = number of values relating to data points 
+			in X.
+		**kwargs : mixed
+			Any number of additional arguments need for training
+			learners of type 'base'.
 		"""
 		self.bag = []
 		self.base = base
@@ -87,9 +93,11 @@ class BaggedRegress(Regress):
 		"""
 		This method makes predictions on X. 
 
-		Args:
-			X = N x M numpy array; N = number of data points (not necessarily
-			  the same as in train), M = number of features
+		Parameters
+		----------
+		X : numpy array 
+			N x M numpy array; N = number of data points (not necessarily
+		  	the same as in train), M = number of features.
 		"""
 		n,m = np.asmatrix(X).shape
 		b = len(self.bag)								# have 'b' learners in the ensemble
@@ -112,10 +120,11 @@ class BaggedRegress(Regress):
 		"""
 		This method sets the learner at index 'i' to 'base'.
 
-		Args:
-			i = int; the index of self.bag where 'base' will
-			  be placed
-			base = regressor object
+		Parameters
+		----------
+		i : int
+			The index of self.bag where 'base' will be placed.
+		base : regressor object
 		"""
 		self[i] = base
 
@@ -151,9 +160,10 @@ class BaggedRegress(Regress):
 		at index 'i' returns the learner at index 'i' in
 		self.bag.
 
-		Args:
-			i = int; the index that specifies the learner
-			  to be returned
+		Parameters
+		----------
+		i = int
+			The index that specifies the learner to be returned.
 		"""
 		if type(i) is not int:
 			raise TypeError('BaggedRegressor.get_component: argument \'i\' must be of type int')

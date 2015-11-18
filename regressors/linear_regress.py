@@ -28,12 +28,15 @@ class LinearRegress(Regress):
 		"""
 		Constructor for LinearRegressor (linear regression model).
 
-		Args:
-			X = N x M numpy array that contains N data points with M features
-			Y = 1 x N numpy array that contains values the relate to the data
-			  points in X
-			reg = scalar (int or float) that is the L2 regularization penalty
-			  ex: 1 / m ||y - w x'||^2 + reg * ||w||^2 
+		Parameters
+		----------
+		X : numpy array 
+			N x M numpy array that contains N data points with M features.
+		Y : numpy array 
+			1 x N numpy array that contains values the relate to the data points 
+			in X.
+		reg : scalar (int or float) 
+			L2 regularization penalty ex: 1 / m ||y - w x'||^2 + reg * ||w||^2.
 		"""
 		self.theta = []
 
@@ -80,8 +83,10 @@ class LinearRegress(Regress):
 		"""
 		This method makes a prediction on X using learned linear coefficients.
 
-		Args:
-			X = N x M numpy array that contains N data points with M features
+		Parameters
+		----------
+		X : numpy array 
+			N x M numpy array that contains N data points with M features.
 		"""
 		X_te = np.concatenate((np.ones((mat(X).shape[0],1)), X), axis=1)		# extend features by including a constant feature
 		return mat(X_te) * mat(self.theta).T
@@ -94,9 +99,10 @@ class LinearRegress(Regress):
 		"""
 		This method sets the weights of linear regression model.
 
-		Args:
-			wts = list, numpy array/matrix that contains scalars (ints or floats)
-			  that are the weights of the regressions model
+		Parameters
+		----------
+		wts : array-like of scalars (ints or floats)
+			Weights of the regressions model.
 		"""
 		if (type(wts) not in [np.ndarray, np.matrix, list] or len(wts) == 0 or not 
 			reduce(lambda x,y: x and y, map(lambda x: type(x) in [int, float], wts))):

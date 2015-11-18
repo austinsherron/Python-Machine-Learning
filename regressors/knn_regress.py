@@ -26,13 +26,18 @@ class KNNRegress(Regress):
 		"""
 		Constructor for KNNRegressor (k-nearest-neighbor regression model).  
 
-		Args:
-			X = N x M array of N training instances with M features  
-			Y = 1 x N array that contains the values that correspond 
-			  to instances in X
-			K = int that sets the number of neighbors to used for predictions
-			alpha = scalar that is the weighted average coefficient (Gaussian 
-			  weighting; alphs = 0 -> simple average)
+		Parameters
+		----------
+		X : numpy array
+			N x M array of N training instances with M features. 
+		Y : numpy array
+			1 x N array that contains the values that correspond to instances 
+			in X.
+		K : int 
+			That sets the number of neighbors to used for predictions.
+		alpha : scalar 
+			Weighted average coefficient (Gaussian weighting; alphs = 0 -> 
+			simple average).
 		"""
 		self.K = K
 		self.X_train = []
@@ -73,9 +78,10 @@ class KNNRegress(Regress):
 		"""
 		This method makes a nearest neighbor prediction on test data X.
 	
-		Args:
-			X = N x M numpy array that contains N data points with M
-			  features. 
+		Parameters
+		----------
+		X : numpy array 
+			N x M numpy array that contains N data points with M features. 
 		"""
 		n_tr,m_tr = mat(self.X_train).shape										# get size of training data
 		n_te,m_te = mat(X).shape												# get size of test data
@@ -102,8 +108,9 @@ class KNNRegress(Regress):
 		"""
 		Set weight parameter.  
 		
-		Args:
-			alpha = scalar (int or float)
+		Parameters
+		----------
+		alpha : scalar (int or float)
 		"""
 		if type(alpha) not in [int, float]:
 			raise TypeError('KNNRegress.set_alpha: alpha must be of type int or float')
@@ -114,8 +121,9 @@ class KNNRegress(Regress):
 		"""
 		Set K. 
 
-		Args:
-			K = int
+		Parameters
+		----------
+		K : int
 		"""
 		if type(K) not in [int, float]:
 			raise TypeError('KNNRegress.set_K: K must be of type int or float')

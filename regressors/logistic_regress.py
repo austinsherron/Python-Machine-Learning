@@ -10,6 +10,8 @@ import numpy as np
 from functools import reduce
 from numpy import asmatrix as mat
 from numpy import asarray as arr
+from numpy import atleast_2d as twod
+from numpy import column_stack as cols
 from regress import Regress
 from utils.data import rescale
 
@@ -30,16 +32,22 @@ class LogisticRegress(Regress):
 		"""
 		Constructor for LogisticRegressor (logistic regression model).
 
-		Args:
-			X = N x M numpy array that contains N data points with M features
-			Y = 1 x N numpy arra that contains values that relate to the data
-			  points in X
-			stepsize = scalar (int/float) that is the step size for gradient descent
-			tolerance = scalar that is the tolerance for stopping criterion
-			max_steps = int that is the maximum number of steps in gradient descent
-			  before stopping
-			init = 'zeros' or 'random'; 'zeros' initializes self.wts to vector of
-			  0s, 'random' initializes self.wts to a vector of random numbers
+		Parameters
+		----------
+		X : numpy array 
+			N x M numpy array that contains N data points with M features.
+		Y : numpy array 
+			1 x N numpy arra that contains values that relate to the data
+		  	points in X.
+		stepsize : scalar (int/float) 
+			Step size for gradient descent.
+		tolerance : scalar 
+			Tolerance for stopping criterion.
+		max_steps : int 
+			Maximum number of steps in gradient descent before stopping.
+		init : str 
+			'zeros' or 'random'; 'zeros' initializes self.wts to vector of
+		  	0s, 'random' initializes self.wts to a vector of random numbers.
 		"""
 		self.wts = []
 
@@ -125,12 +133,9 @@ class LogisticRegress(Regress):
 		"""
 		n,d = mat(X).shape
 
-		if n == 1:
-			X = np.concatenate(([0], X), axis=1)
-		else:
-			X = np.concatenate((np.ones((n,1)), X), axis=1)
+		X_train = cols((np.ones((n,1)), twod(X)))
 
-		f = mat(X) * mat(self.wts).T
+		f = mat(X_train) * mat(self.wts).T
 		return 1 / (1 + np.exp(-f))
 
 

@@ -30,15 +30,26 @@ class NNetRegress(Regress):
 		Constructor for NNetRegressor (neural network classifier).
 		Member weights are [W1 ... WL-1] where W1 is Nh1 x N1
 
-		Args:
-			X = N x M numpy array that contains N data points with M features
-			Y = 1 x N numpy array that contains N values that relate to data points in X
-			sizes = array of ints; [N1, Nh1 ... Nout] where Nout is # of outputs
-			init = string; one of 'keep', 'zeros', or 'logistic; init method for weights'
-			stepsize = scalar; step size for gradient descent (descreases as 1 / iter)
-			tolerance = scalar; tolerance for stopping criterion
-			max_steps = int; maximum number of steps before stopping
-			activation = string; one of 'logistic', 'htangent', or 'custom'; init method for activation functions
+		Parameters
+		----------
+		X : numpy array 
+			N x M numpy array that contains N data points with M features.
+		Y : numpy array 
+			1 x N numpy array that contains N values that relate to data 
+			points in X.
+		sizes = array of ints 
+			[N1, Nh1 ... Nout] where Nout is # of outputs.
+		init : str
+			One of 'keep', 'zeros', or 'logistic; init method for weights'.
+		stepsize : scalar
+			Step size for gradient descent (descreases as 1 / iter).
+		tolerance : scalar
+			Tolerance for stopping criterion.
+		max_steps : int
+			Maximum number of steps before stopping.
+		activation : string
+			One of 'logistic', 'htangent', or 'custom'; init method for 
+			activation functions.
 		"""
 		self.wts = arr([], dtype=object)
 		self.activation = activation
@@ -114,8 +125,11 @@ class NNetRegress(Regress):
 		"""
 		This method makes predictions on test data 'X'.
 
-		Args:
-			X = N x M numpy array; N = number of data points; M = number of features
+		Parameters
+		----------
+		X : numpy array 
+			N x M numpy array; N = number of data points; M = number of 
+			features.
 		"""
 		L = len(self.wts)
 		Z = arr(concat((np.ones((mat(X).shape[0],1)), mat(X)), axis=1))					# initialize to input features + constant
@@ -135,12 +149,18 @@ class NNetRegress(Regress):
 		"""
 		This method sets activation functions. 
 
-		Args:
-			method = str; one of 'logistic', 'htangent', or 'custom'
-			sig = function object; pass only when method == 'custom'
-			d_sig = function object; pass only when method == 'custom'
-			sig_0 = function object; pass only when method == 'custom' (output layer activation function)
-			d_sig_0 = function object; pass only when method == 'custom' (output layer activation function)
+		Parameters
+		----------
+		method : str
+			One of 'logistic', 'htangent', or 'custom'.
+		sig : function object
+			Pass only when method == 'custom'.
+		d_sig : function object
+			Pass only when method == 'custom'.
+		sig_0 : function object
+			Pass only when method == 'custom' (output layer activation function).
+		d_sig_0 : function object
+			Pass only when method == 'custom' (output layer activation function).
 
 		TODO:
 			add multilogit?

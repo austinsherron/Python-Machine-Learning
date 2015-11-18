@@ -27,15 +27,21 @@ class TreeRegress(Regress):
 		"""
 		Constructor for TreeRegressor (decision tree regression model).
 
-		Args:
-			X = N x M numpy array which contains N data points with M features.
-			Y = 1 x N numpy array that contains values the relate to the data
-			  points in X
-			min_parent = int which is the minimum number of data required
-			  to split a node. 
-			min_score = int which is the minimum value of score improvement to split a node.
-			max_depth = int which is the maximum depth of the decision tree. 
-			n_features = number of available features for splitting at each node.
+		Parameters
+		----------
+		X : numpy array 
+			N x M numpy array which contains N data points with M features.
+		Y : numpy array 
+			1 x N numpy array that contains values the relate to the data
+		  	points in X.
+		min_parent : int 
+			Minimum number of data required to split a node. 
+		min_score : int 
+			Minimum value of score improvement to split a node.
+		max_depth : int 
+			Maximum depth of the decision tree. 
+		n_features : int 
+			Number of available features for splitting at each node.
 		"""
 		self.L = arr([0])			# indices of left children
 		self.R = arr([0])			# indices of right children
@@ -94,10 +100,12 @@ class TreeRegress(Regress):
 		"""
 		This method makes predictions on the test data X.
 
-		Args:
-			X = N x M numpy array which contains N data points with
-			  M features. N doesn't necessarily have to be the same as
-			  for X in train.
+		Parameters
+		----------
+		X : numpy array 
+			N x M numpy array which contains N data points with
+		  	M features. N doesn't necessarily have to be the same as
+		  	for X in train.
 		"""
 		return self.__dectree_test(X, self.L, self.R, self.F, self.T, 0)
 
