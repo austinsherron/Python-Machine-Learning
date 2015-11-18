@@ -8,6 +8,9 @@ import math
 import numpy as np
 
 from classify import Classify
+from numpy import array as arr
+from utils.data import filter_data, load_data_from_csv
+from utils.test import test_randomly
 
 
 ################################################################################
@@ -26,13 +29,18 @@ class TreeClassify(Classify):
 		"""
 		Constructor for TreeClassifier (decision tree classifier).
 
-		Args:
-			X is an N x M numpy array which contains N data points with M features.
-			Y is a N x 1 numpy array which contains class labels for the data points in X. 
-			min_parent is an int which is the minimum number of data required
-			  to split a node. 
-			max_depth is an int which is the maximum depth of the decision tree. 
-			n_features is the number of available features for splitting at each node.
+		Parameters
+		----------
+		X : numpy array 
+			N x M numpy array which contains N data points with M features.
+		Y : numpy array
+			N x 1 numpy array which contains class labels for the data points in X. 
+		min_parent : int 
+			The minimum number of data required to split a node. 
+		max_depth : int 
+			The maximum depth of the decision tree. 
+		n_features : int 
+			The number of available features for splitting at each node.
 		"""
 		self.L = np.asarray([0])
 		self.R = np.asarray([0])
@@ -95,10 +103,11 @@ class TreeClassify(Classify):
 		"""
 		This method makes predictions on the test data X.
 
-		Args:
-			X is an N x M numpy array which contains N data points with
-			  M features. N doesn't necessarily have to be the same as
-			  for X in train.
+		Parameters
+		----------
+		X : numpy array
+			N x M numpy array which contains N data points with M features. 
+			N doesn't necessarily have to be the same as for X in train.
 		"""
 		Y_te = self.__dectree_test(X, self.L, self.R, self.F, self.T, 0).T.ravel()
 		return np.asarray([[self.classes[int(i)]] for i in Y_te])
@@ -111,8 +120,10 @@ class TreeClassify(Classify):
 		"""
 		Set classes of the classifier. 
 
-		Args:
-			classes should be a list.
+		Parameters
+		----------
+		classes : list 
+			List of class labels.
 		"""
 		if type(classes) is not list or len(classes) == 0:
 			raise TypeError('TreeClassify.set_classes: classes should be a list with a length of at least 1')
@@ -235,82 +246,110 @@ class TreeClassify(Classify):
 
 if __name__ == '__main__':
 
-	data = [[float(val) for val in row[:-1]] for row in csv.reader(open('../classifier-data.csv'))]
-	trd = np.asarray(data[0:40] + data[50:90] + data[100:140])
-	ted = np.asarray(data[40:50] + data[90:100] + data[140:150])
-	classes = [float(row[-1].lower()) for row in csv.reader(open('../classifier-data.csv'))]
-	trc = np.asarray(classes[0:40] + classes[50:90] + classes[100:140])
-	tec = np.asarray(classes[40:50] + classes[90:100] + classes[140:150])
+## RANDOM TESTING ##############################################################
 
-	btrd = trd[0:80,:]
-	bted = ted[0:20,:]
-	btrc = trc[0:80]
-	btec = tec[0:20]
+	data,classes = load_data_from_csv('../classifier-data.csv', 4, float)
+	data,classes = arr(data), arr(classes)
 
-	btrd2 = trd[40:120,:]
-	bted2 = ted[10:30,:]
-	btrc2 = trc[40:120]
-	btec2 = tec[10:30]
+	bd1,bc1 = filter_data(data, classes, lambda x,y: y == 2)
+	bd1,bc1 = np.array(bd1), np.array(bc1)
 
-	print('tc', '\n')
-	tc = TreeClassify(trd, trc)
-	print(tc, '\n')
-	print(tc.predict(ted), '\n')
-	print(tc.err(ted, tec), '\n')
-	print(tc.confusion(ted, tec), '\n')
+	def test(trd, trc, ted, tec):
+		print('tc', '\n')
+		tc = TreeClassify(trd, trc)
+		print(tc, '\n')
+	#	print(tc.predict(ted), '\n')
+	#	print(tc.predict_soft(ted), '\n')
+	#	print(tc.confusion(ted, tec), '\n')
+	#	print(tc.auc(ted, tec), '\n')
+	#	print(tc.roc(ted, tec), '\n')
+		err = tc.err(ted, tec)
+		print(err, '\n')
+		return err
 
-	print()
+	avg_err = test_randomly(data, classes, 0.8, test)
 
-	print('itc', '\n')
-	itc = TreeClassify(ted, tec)
-	print(itc, '\n')
-	print(itc.predict(trd), '\n')
-	print(itc.err(trd, trc), '\n')
-	print(itc.confusion(trd, trc), '\n')
+	print('avg_err')
+	print(avg_err)
 
-	print()
+## DETERMINISTIC TESTING #######################################################
 
-	print('btc', '\n')
-	btc = TreeClassify(btrd, btrc)
-	print(btc, '\n')
-	print(btc.predict(bted), '\n')
-	print(btc.auc(bted, btec), '\n')
-	print(btc.err(bted, btec), '\n')
-	print(btc.roc(bted, btec), '\n')
-	print(btc.confusion(bted, btec), '\n')
-
-	print()
-
-	print('ibtc', '\n')
-	ibtc = TreeClassify(bted, btec)
-	print(ibtc, '\n')
-	print(ibtc.predict(btrd), '\n')
-	print(ibtc.auc(btrd, btrc), '\n')
-	print(ibtc.err(btrd, btrc), '\n')
-	print(ibtc.roc(btrd, btrc), '\n')
-	print(ibtc.confusion(btrd, btrc), '\n')
-
-	print()
-
-	print('btc2', '\n')
-	btc2 = TreeClassify(btrd2, btrc2)
-	print(btc2, '\n')
-	print(btc2.predict(bted2), '\n')
-	print(btc2.auc(bted2, btec2), '\n')
-	print(btc2.err(bted2, btec2), '\n')
-	print(btc2.roc(bted2, btec2), '\n')
-	print(btc2.confusion(bted2, btec2), '\n')
-
-	print()
-
-	print('ibtc2', '\n')
-	ibtc2 = TreeClassify(bted2, btec2)
-	print(ibtc2, '\n')
-	print(ibtc2.predict(btrd2), '\n')
-	print(ibtc2.auc(btrd2, btrc2), '\n')
-	print(ibtc2.err(btrd2, btrc2), '\n')
-	print(ibtc2.roc(btrd2, btrc2), '\n')
-	print(ibtc2.confusion(btrd2, btrc2), '\n')
+#	data = [[float(val) for val in row[:-1]] for row in csv.reader(open('../classifier-data.csv'))]
+#	trd = np.asarray(data[0:40] + data[50:90] + data[100:140])
+#	ted = np.asarray(data[40:50] + data[90:100] + data[140:150])
+#	classes = [float(row[-1].lower()) for row in csv.reader(open('../classifier-data.csv'))]
+#	trc = np.asarray(classes[0:40] + classes[50:90] + classes[100:140])
+#	tec = np.asarray(classes[40:50] + classes[90:100] + classes[140:150])
+#
+#	btrd = trd[0:80,:]
+#	bted = ted[0:20,:]
+#	btrc = trc[0:80]
+#	btec = tec[0:20]
+#
+#	btrd2 = trd[40:120,:]
+#	bted2 = ted[10:30,:]
+#	btrc2 = trc[40:120]
+#	btec2 = tec[10:30]
+#
+#	print('tc', '\n')
+#	tc = TreeClassify(trd, trc)
+#	print(tc, '\n')
+#	print(tc.predict(ted), '\n')
+#	print(tc.err(ted, tec), '\n')
+#	print(tc.confusion(ted, tec), '\n')
+#
+#	print()
+#
+#	print('itc', '\n')
+#	itc = TreeClassify(ted, tec)
+#	print(itc, '\n')
+#	print(itc.predict(trd), '\n')
+#	print(itc.err(trd, trc), '\n')
+#	print(itc.confusion(trd, trc), '\n')
+#
+#	print()
+#
+#	print('btc', '\n')
+#	btc = TreeClassify(btrd, btrc)
+#	print(btc, '\n')
+#	print(btc.predict(bted), '\n')
+#	print(btc.auc(bted, btec), '\n')
+#	print(btc.err(bted, btec), '\n')
+#	print(btc.roc(bted, btec), '\n')
+#	print(btc.confusion(bted, btec), '\n')
+#
+#	print()
+#
+#	print('ibtc', '\n')
+#	ibtc = TreeClassify(bted, btec)
+#	print(ibtc, '\n')
+#	print(ibtc.predict(btrd), '\n')
+#	print(ibtc.auc(btrd, btrc), '\n')
+#	print(ibtc.err(btrd, btrc), '\n')
+#	print(ibtc.roc(btrd, btrc), '\n')
+#	print(ibtc.confusion(btrd, btrc), '\n')
+#
+#	print()
+#
+#	print('btc2', '\n')
+#	btc2 = TreeClassify(btrd2, btrc2)
+#	print(btc2, '\n')
+#	print(btc2.predict(bted2), '\n')
+#	print(btc2.auc(bted2, btec2), '\n')
+#	print(btc2.err(bted2, btec2), '\n')
+#	print(btc2.roc(bted2, btec2), '\n')
+#	print(btc2.confusion(bted2, btec2), '\n')
+#
+#	print()
+#
+#	print('ibtc2', '\n')
+#	ibtc2 = TreeClassify(bted2, btec2)
+#	print(ibtc2, '\n')
+#	print(ibtc2.predict(btrd2), '\n')
+#	print(ibtc2.auc(btrd2, btrc2), '\n')
+#	print(ibtc2.err(btrd2, btrc2), '\n')
+#	print(ibtc2.roc(btrd2, btrc2), '\n')
+#	print(ibtc2.confusion(btrd2, btrc2), '\n')
 
 
 ################################################################################
