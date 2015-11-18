@@ -197,6 +197,8 @@ class LogisticClassify(Classify):
 		j_sur, j_01 = np.zeros((1,stop_iter + 1)).ravel(), np.zeros((1,stop_iter + 1)).ravel()
 
 		while not done:
+			print('iter')
+			print(iter)
 			step = stepsize / iter
 			j_sur[iter] = self.__nll(X, Y) + reg * np.sum(np.power(self.wts[:], 2))
 			j_01[iter] = self.err(X, Y_copy)

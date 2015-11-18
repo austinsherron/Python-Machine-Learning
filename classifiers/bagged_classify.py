@@ -12,7 +12,10 @@ from gauss_bayes_classify import GaussBayesClassify
 from knn_classify import KNNClassify
 from linear_classify import LinearClassify
 from logistic_classify import LogisticClassify
+from numpy import asarray as arr
 from tree_classify import TreeClassify
+from utils.data import filter_data, load_data_from_csv
+from utils.test import test_randomly
 
 
 ################################################################################
@@ -215,6 +218,38 @@ class BaggedClassify(Classify):
 
 
 if __name__ == '__main__':
+
+## RANDOM TESTING ##############################################################
+
+	data,classes = load_data_from_csv('../classifier-data.csv', 4, float)
+	data,classes = arr(data), arr(classes)
+
+	bd1,bc1 = filter_data(data, classes, lambda x,y: y == 2)
+	bd1,bc1 = np.array(bd1), np.array(bc1)
+
+	bases = [GaussBayesClassify, KNNClassify, TreeClassify] 
+	bases += [LinearClassify, LogisticClassify]
+
+	def test(trd, trc, ted, tec):
+		print('bc', '\n')
+		bc = BaggedClassify(bases[np.random.randint(len(bases))], 20, trd, trc)
+		print(bc, '\n')
+#		print(bc.predict(ted), '\n')
+#		print(bc.predict_soft(ted), '\n')
+#		print(bc.confusion(ted, tec), '\n')
+		print(bc.auc(ted, tec), '\n')
+		print(bc.roc(ted, tec), '\n')
+		err = bc.err(ted, tec)
+		print(err, '\n')
+		return err
+
+	avg_err = test_randomly(bd1, bc1, 0.8, test)
+
+	print('avg_err')
+	print(avg_err)
+
+
+## DETERMINISTIC TESTING #######################################################
 
 	np.set_printoptions(linewidth=200)
 
