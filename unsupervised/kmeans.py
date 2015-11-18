@@ -18,7 +18,7 @@ from numpy import atleast_2d as twod
 ################################################################################
 
 
-def kmeans(X, K, init='random', max_iter=100, do_plot=False, to_return='z'):
+def kmeans(X, K, init='random', max_iter=100, do_plot=False, to_return=[1, 0, 0]):
 	"""
 	Perform K-means clustering on data X.
 
@@ -40,7 +40,11 @@ def kmeans(X, K, init='random', max_iter=100, do_plot=False, to_return='z'):
 		Maximum number of optimization iterations.
 	do_plot : bool (optional)
 		Plot 2D data?
-	to_return : str
+	to_return : [bool]
+		Array of bools that specifies which values to return. The bool
+		at to_return[0] indicates whether c should be returned. The bool
+		at to_return[1] indicates whether sumd should be returned.
+		z will always be returned.
 
 	Returns
 	-------
@@ -52,7 +56,6 @@ def kmeans(X, K, init='random', max_iter=100, do_plot=False, to_return='z'):
 	sumd : scalar (optional)
 		Sum of squared euclidean distances.
 		
-
 	TODO: test more
 	"""
 	n,d = twod(X).shape							# get data size
@@ -71,8 +74,9 @@ def kmeans(X, K, init='random', max_iter=100, do_plot=False, to_return='z'):
 	else:
 		c = init
 
-	return __optimize(X, n, K, c,  max_iter)
+	z,c,sumd = __optimize(X, n, K, c,  max_iter)
 
+	return __optional_return(to_return, z, c, sumd)
 
 
 def __optimize(X, n, K, c, max_iter):
@@ -103,7 +107,7 @@ def __optimize(X, n, K, c, max_iter):
 		sum_old = sumd
 		iter += 1
 
-	return z
+	return z,c,sumd
 			
 
 def __k_init(X, K, determ):
@@ -146,7 +150,12 @@ def __k_init(X, K, determ):
 		dist = np.minimum(dist, new_dist)
 
 	return clusters
-		
+
+
+def __optional_return(to_return, *args):
+	d = zip(to_return, args)
+	return tuple((map(lambda x: x[1], filter(lambda x: x[0], d))))
+
 
 ################################################################################
 ################################################################################
