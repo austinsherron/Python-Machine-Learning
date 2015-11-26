@@ -121,7 +121,7 @@ class LogisticRegress(Regress):
 			done = (iter > 1 and abs(mse[iter] - mse[iter - 1]) < tolerance) or iter >= max_steps
 			iter += 1
 
-		self.wts = arr(self.wts).ravel()
+		self.wts = arr(self.wts)
 
 
 	def __logistic(self, X):
@@ -131,11 +131,11 @@ class LogisticRegress(Regress):
 			__gradient_descent
 			predict
 		"""
-		n,d = mat(X).shape
+		n,d = twod(X).shape
 
 		X_train = cols((np.ones((n,1)), twod(X)))
 
-		f = mat(X_train) * mat(self.wts).T
+		f = twod(X_train).dot(twod(self.wts).T)
 		return 1 / (1 + np.exp(-f))
 
 
