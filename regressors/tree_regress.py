@@ -6,9 +6,12 @@
 import csv
 import math
 import numpy as np
+
 from numpy import asarray as arr
 from numpy import asmatrix as mat
 from regress import Regress
+from utils.data import load_data_from_csv
+from utils.test import test_randomly
 
 
 ################################################################################
@@ -252,198 +255,218 @@ if __name__ == '__main__':
 
 	np.set_printoptions(linewidth=200)
 
-	data = [[float(val) for val in row[:-1]] for row in csv.reader(open('../regressor-data.csv'))]
-	trd = np.asarray(data[0:40] + data[50:90] + data[100:140])
-	ted = np.asarray(data[40:50] + data[90:100] + data[140:150])
-	trd2 = np.asarray(data[150:180] + data[200:230] + data[250:280])
-	ted2 = np.asarray(data[180:200] + data[230:250] + data[280:300])
-	trd3 = np.asarray(data[300:320] + data[350:370] + data[400:420])
-	ted3 = np.asarray(data[320:350] + data[370:400] + data[420:450])
-	predictions = [float(row[-1].lower()) for row in csv.reader(open('../regressor-data.csv'))]
-	trp = np.asarray(predictions[0:40] + predictions[50:90] + predictions[100:140])
-	tep = np.asarray(predictions[40:50] + predictions[90:100] + predictions[140:150])
-	trp2 = np.asarray(predictions[150:180] + predictions[200:230] + predictions[250:280])
-	tep2 = np.asarray(predictions[180:200] + predictions[230:250] + predictions[280:300])
-	trp3 = np.asarray(predictions[300:320] + predictions[350:370] + predictions[400:420])
-	tep3 = np.asarray(predictions[320:350] + predictions[370:400] + predictions[420:450])
+## RANDOM TESTING ##############################################################
 
-	print('tr', '\n')
-	tr = TreeRegress(trd, trp)
-	print(tr, '\n')
-	print(tr.predict(ted), '\n')
-	print(tr.mae(ted, tep), '\n')
-	print(tr.mse(ted, tep), '\n')
-	print(tr.rmse(ted, tep), '\n')
+	data,predictions = load_data_from_csv('../regressor-data.csv', -1, float)
+	data,predictions = arr(data), arr(predictions)
 
-	print()
+	def test(trd, trc, ted, tec):
+		print('tr', '\n')
+		tr = TreeRegress(trd, trc)
+		print(tr, '\n')
+		err = tr.mae(ted, tec)
+		print(err, '\n')
+		return err
 
-	print('tr', '\n')
-	tr = TreeRegress(trd2, trp2)
-	print(tr, '\n')
-	print(tr.predict(ted), '\n')
-	print(tr.mae(ted, tep), '\n')
-	print(tr.mse(ted, tep), '\n')
-	print(tr.rmse(ted, tep), '\n')
+	avg_err = test_randomly(data, predictions, 0.8, test)
 
-	print()
+	print('avg_err')
+	print(avg_err)
 
-	print('tr', '\n')
-	tr = TreeRegress(trd3, trp3)
-	print(tr, '\n')
-	print(tr.predict(ted), '\n')
-	print(tr.mae(ted, tep), '\n')
-	print(tr.mse(ted, tep), '\n')
-	print(tr.rmse(ted, tep), '\n')
+## DETERMINISTIC TESTING #######################################################
 
-	print()
-
-	print('tr', '\n')
-	tr = TreeRegress(trd, trp, min_parent=1)
-	print(tr, '\n')
-	print(tr.predict(ted), '\n')
-	print(tr.mae(ted, tep), '\n')
-	print(tr.mse(ted, tep), '\n')
-	print(tr.rmse(ted, tep), '\n')
-
-	print()
-
-	print('tr', '\n')
-	tr = TreeRegress(trd2, trp2, min_parent=3)
-	print(tr, '\n')
-	print(tr.predict(ted), '\n')
-	print(tr.mae(ted, tep), '\n')
-	print(tr.mse(ted, tep), '\n')
-	print(tr.rmse(ted, tep), '\n')
-
-	print()
-
-	print('tr', '\n')
-	tr = TreeRegress(trd3, trp3, min_parent=5)
-	print(tr, '\n')
-	print(tr.predict(ted), '\n')
-	print(tr.mae(ted, tep), '\n')
-	print(tr.mse(ted, tep), '\n')
-	print(tr.rmse(ted, tep), '\n')
-
-	print()
-
-	print('tr', '\n')
-	tr = TreeRegress(trd, trp, max_depth=10)
-	print(tr, '\n')
-	print(tr.predict(ted), '\n')
-	print(tr.mae(ted, tep), '\n')
-	print(tr.mse(ted, tep), '\n')
-	print(tr.rmse(ted, tep), '\n')
-
-	print()
-
-	print('tr', '\n')
-	tr = TreeRegress(trd2, trp2, max_depth=100)
-	print(tr, '\n')
-	print(tr.predict(ted), '\n')
-	print(tr.mae(ted, tep), '\n')
-	print(tr.mse(ted, tep), '\n')
-	print(tr.rmse(ted, tep), '\n')
-
-	print()
-
-	print('tr', '\n')
-	tr = TreeRegress(trd3, trp3, max_depth=500)
-	print(tr, '\n')
-	print(tr.predict(ted), '\n')
-	print(tr.mae(ted, tep), '\n')
-	print(tr.mse(ted, tep), '\n')
-	print(tr.rmse(ted, tep), '\n')
-
-	print()
-
-	print('tr', '\n')
-	tr = TreeRegress(trd, trp, min_score=10)
-	print(tr, '\n')
-	print(tr.predict(ted), '\n')
-	print(tr.mae(ted, tep), '\n')
-	print(tr.mse(ted, tep), '\n')
-	print(tr.rmse(ted, tep), '\n')
-
-	print()
-
-	print('tr', '\n')
-	tr = TreeRegress(trd2, trp2, min_score=50)
-	print(tr, '\n')
-	print(tr.predict(ted), '\n')
-	print(tr.mae(ted, tep), '\n')
-	print(tr.mse(ted, tep), '\n')
-	print(tr.rmse(ted, tep), '\n')
-
-	print()
-
-	print('tr', '\n')
-	tr = TreeRegress(trd3, trp3, min_score=100)
-	print(tr, '\n')
-	print(tr.predict(ted), '\n')
-	print(tr.mae(ted, tep), '\n')
-	print(tr.mse(ted, tep), '\n')
-	print(tr.rmse(ted, tep), '\n')
-
-	print()
-
-	print('tr', '\n')
-	tr = TreeRegress(trd, trp, n_features=1)
-	print(tr, '\n')
-	print(tr.predict(ted), '\n')
-	print(tr.mae(ted, tep), '\n')
-	print(tr.mse(ted, tep), '\n')
-	print(tr.rmse(ted, tep), '\n')
-
-	print()
-
-	print('tr', '\n')
-	tr = TreeRegress(trd2, trp2, n_features=2)
-	print(tr, '\n')
-	print(tr.predict(ted), '\n')
-	print(tr.mae(ted, tep), '\n')
-	print(tr.mse(ted, tep), '\n')
-	print(tr.rmse(ted, tep), '\n')
-
-	print()
-
-	print('tr', '\n')
-	tr = TreeRegress(trd3, trp3, n_features=3)
-	print(tr, '\n')
-	print(tr.predict(ted), '\n')
-	print(tr.mae(ted, tep), '\n')
-	print(tr.mse(ted, tep), '\n')
-	print(tr.rmse(ted, tep), '\n')
-
-	print()
-
-	print('tr', '\n')
-	tr = TreeRegress(trd, trp, min_parent=1, max_depth=10000, min_score=.001, n_features=3)
-	print(tr, '\n')
-	print(tr.predict(ted), '\n')
-	print(tr.mae(ted, tep), '\n')
-	print(tr.mse(ted, tep), '\n')
-	print(tr.rmse(ted, tep), '\n')
-
-	print()
-
-	print('tr', '\n')
-	tr = TreeRegress(trd2, trp2, min_parent=10, max_depth=20, min_score=1, n_features=1)
-	print(tr, '\n')
-	print(tr.predict(ted), '\n')
-	print(tr.mae(ted, tep), '\n')
-	print(tr.mse(ted, tep), '\n')
-	print(tr.rmse(ted, tep), '\n')
-
-	print()
-
-	print('tr', '\n')
-	tr = TreeRegress(trd3, trp3, min_parent=1, max_depth=20, min_score=.001, n_features=1)
-	print(tr, '\n')
-	print(tr.predict(ted), '\n')
-	print(tr.mae(ted, tep), '\n')
-	print(tr.mse(ted, tep), '\n')
-	print(tr.rmse(ted, tep), '\n')
+#	data = [[float(val) for val in row[:-1]] for row in csv.reader(open('../regressor-data.csv'))]
+#	trd = np.asarray(data[0:40] + data[50:90] + data[100:140])
+#	ted = np.asarray(data[40:50] + data[90:100] + data[140:150])
+#	trd2 = np.asarray(data[150:180] + data[200:230] + data[250:280])
+#	ted2 = np.asarray(data[180:200] + data[230:250] + data[280:300])
+#	trd3 = np.asarray(data[300:320] + data[350:370] + data[400:420])
+#	ted3 = np.asarray(data[320:350] + data[370:400] + data[420:450])
+#	predictions = [float(row[-1].lower()) for row in csv.reader(open('../regressor-data.csv'))]
+#	trp = np.asarray(predictions[0:40] + predictions[50:90] + predictions[100:140])
+#	tep = np.asarray(predictions[40:50] + predictions[90:100] + predictions[140:150])
+#	trp2 = np.asarray(predictions[150:180] + predictions[200:230] + predictions[250:280])
+#	tep2 = np.asarray(predictions[180:200] + predictions[230:250] + predictions[280:300])
+#	trp3 = np.asarray(predictions[300:320] + predictions[350:370] + predictions[400:420])
+#	tep3 = np.asarray(predictions[320:350] + predictions[370:400] + predictions[420:450])
+#
+#	print('tr', '\n')
+#	tr = TreeRegress(trd, trp)
+#	print(tr, '\n')
+#	print(tr.predict(ted), '\n')
+#	print(tr.mae(ted, tep), '\n')
+#	print(tr.mse(ted, tep), '\n')
+#	print(tr.rmse(ted, tep), '\n')
+#
+#	print()
+#
+#	print('tr', '\n')
+#	tr = TreeRegress(trd2, trp2)
+#	print(tr, '\n')
+#	print(tr.predict(ted), '\n')
+#	print(tr.mae(ted, tep), '\n')
+#	print(tr.mse(ted, tep), '\n')
+#	print(tr.rmse(ted, tep), '\n')
+#
+#	print()
+#
+#	print('tr', '\n')
+#	tr = TreeRegress(trd3, trp3)
+#	print(tr, '\n')
+#	print(tr.predict(ted), '\n')
+#	print(tr.mae(ted, tep), '\n')
+#	print(tr.mse(ted, tep), '\n')
+#	print(tr.rmse(ted, tep), '\n')
+#
+#	print()
+#
+#	print('tr', '\n')
+#	tr = TreeRegress(trd, trp, min_parent=1)
+#	print(tr, '\n')
+#	print(tr.predict(ted), '\n')
+#	print(tr.mae(ted, tep), '\n')
+#	print(tr.mse(ted, tep), '\n')
+#	print(tr.rmse(ted, tep), '\n')
+#
+#	print()
+#
+#	print('tr', '\n')
+#	tr = TreeRegress(trd2, trp2, min_parent=3)
+#	print(tr, '\n')
+#	print(tr.predict(ted), '\n')
+#	print(tr.mae(ted, tep), '\n')
+#	print(tr.mse(ted, tep), '\n')
+#	print(tr.rmse(ted, tep), '\n')
+#
+#	print()
+#
+#	print('tr', '\n')
+#	tr = TreeRegress(trd3, trp3, min_parent=5)
+#	print(tr, '\n')
+#	print(tr.predict(ted), '\n')
+#	print(tr.mae(ted, tep), '\n')
+#	print(tr.mse(ted, tep), '\n')
+#	print(tr.rmse(ted, tep), '\n')
+#
+#	print()
+#
+#	print('tr', '\n')
+#	tr = TreeRegress(trd, trp, max_depth=10)
+#	print(tr, '\n')
+#	print(tr.predict(ted), '\n')
+#	print(tr.mae(ted, tep), '\n')
+#	print(tr.mse(ted, tep), '\n')
+#	print(tr.rmse(ted, tep), '\n')
+#
+#	print()
+#
+#	print('tr', '\n')
+#	tr = TreeRegress(trd2, trp2, max_depth=100)
+#	print(tr, '\n')
+#	print(tr.predict(ted), '\n')
+#	print(tr.mae(ted, tep), '\n')
+#	print(tr.mse(ted, tep), '\n')
+#	print(tr.rmse(ted, tep), '\n')
+#
+#	print()
+#
+#	print('tr', '\n')
+#	tr = TreeRegress(trd3, trp3, max_depth=500)
+#	print(tr, '\n')
+#	print(tr.predict(ted), '\n')
+#	print(tr.mae(ted, tep), '\n')
+#	print(tr.mse(ted, tep), '\n')
+#	print(tr.rmse(ted, tep), '\n')
+#
+#	print()
+#
+#	print('tr', '\n')
+#	tr = TreeRegress(trd, trp, min_score=10)
+#	print(tr, '\n')
+#	print(tr.predict(ted), '\n')
+#	print(tr.mae(ted, tep), '\n')
+#	print(tr.mse(ted, tep), '\n')
+#	print(tr.rmse(ted, tep), '\n')
+#
+#	print()
+#
+#	print('tr', '\n')
+#	tr = TreeRegress(trd2, trp2, min_score=50)
+#	print(tr, '\n')
+#	print(tr.predict(ted), '\n')
+#	print(tr.mae(ted, tep), '\n')
+#	print(tr.mse(ted, tep), '\n')
+#	print(tr.rmse(ted, tep), '\n')
+#
+#	print()
+#
+#	print('tr', '\n')
+#	tr = TreeRegress(trd3, trp3, min_score=100)
+#	print(tr, '\n')
+#	print(tr.predict(ted), '\n')
+#	print(tr.mae(ted, tep), '\n')
+#	print(tr.mse(ted, tep), '\n')
+#	print(tr.rmse(ted, tep), '\n')
+#
+#	print()
+#
+#	print('tr', '\n')
+#	tr = TreeRegress(trd, trp, n_features=1)
+#	print(tr, '\n')
+#	print(tr.predict(ted), '\n')
+#	print(tr.mae(ted, tep), '\n')
+#	print(tr.mse(ted, tep), '\n')
+#	print(tr.rmse(ted, tep), '\n')
+#
+#	print()
+#
+#	print('tr', '\n')
+#	tr = TreeRegress(trd2, trp2, n_features=2)
+#	print(tr, '\n')
+#	print(tr.predict(ted), '\n')
+#	print(tr.mae(ted, tep), '\n')
+#	print(tr.mse(ted, tep), '\n')
+#	print(tr.rmse(ted, tep), '\n')
+#
+#	print()
+#
+#	print('tr', '\n')
+#	tr = TreeRegress(trd3, trp3, n_features=3)
+#	print(tr, '\n')
+#	print(tr.predict(ted), '\n')
+#	print(tr.mae(ted, tep), '\n')
+#	print(tr.mse(ted, tep), '\n')
+#	print(tr.rmse(ted, tep), '\n')
+#
+#	print()
+#
+#	print('tr', '\n')
+#	tr = TreeRegress(trd, trp, min_parent=1, max_depth=10000, min_score=.001, n_features=3)
+#	print(tr, '\n')
+#	print(tr.predict(ted), '\n')
+#	print(tr.mae(ted, tep), '\n')
+#	print(tr.mse(ted, tep), '\n')
+#	print(tr.rmse(ted, tep), '\n')
+#
+#	print()
+#
+#	print('tr', '\n')
+#	tr = TreeRegress(trd2, trp2, min_parent=10, max_depth=20, min_score=1, n_features=1)
+#	print(tr, '\n')
+#	print(tr.predict(ted), '\n')
+#	print(tr.mae(ted, tep), '\n')
+#	print(tr.mse(ted, tep), '\n')
+#	print(tr.rmse(ted, tep), '\n')
+#
+#	print()
+#
+#	print('tr', '\n')
+#	tr = TreeRegress(trd3, trp3, min_parent=1, max_depth=20, min_score=.001, n_features=1)
+#	print(tr, '\n')
+#	print(tr.predict(ted), '\n')
+#	print(tr.mae(ted, tep), '\n')
+#	print(tr.mse(ted, tep), '\n')
+#	print(tr.rmse(ted, tep), '\n')
 
 
 ################################################################################

@@ -235,13 +235,13 @@ if __name__ == '__main__':
 #		print(knn.predict(ted), '\n')
 #		print(knn.predict_soft(ted), '\n')
 #		print(knn.confusion(ted, tec), '\n')
-		print(knn.auc(ted, tec), '\n')
-		print(knn.roc(ted, tec), '\n')
+#		print(knn.auc(ted, tec), '\n')
+#		print(knn.roc(ted, tec), '\n')
 		err = knn.err(ted, tec)
 		print(err, '\n')
 		return err
 
-	avg_err = test_randomly(bd1, bc1, 0.8, test)
+	avg_err = test_randomly(data, classes, 0.8, test)
 
 	print('avg_err')
 	print(avg_err)

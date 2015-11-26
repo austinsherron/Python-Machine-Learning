@@ -51,7 +51,7 @@ def em_cluster(X, K, init='random', max_iter=100, tol=1e-6, do_plot=False, to_re
 		Stopping tolerance.
 	do_plot : bool (optional)
 		Plot if do_plot == True.
-	to_return : [bool]
+	to_return : [bool] (optional)
 		Array of bools that specifies which values to return. The bool
 		at to_return[0] indicates whether z should be returned; the bool
 		at to_return[1] indicates whether T should be returned, etc.
@@ -150,10 +150,14 @@ if __name__ == '__main__':
 	X,Y = data.load_data_from_csv('../classifier-data.csv', 4, float)
 	X,Y = arr(X), arr(Y)
 
-	z,ll = em_cluster(X, 5, to_return=[1,0,0,1])
+	z,T,soft,ll = em_cluster(X, 5, to_return=[1,1,1,1])
 
 	print('z')
 	print(z)
+	print('T')
+	print(T)
+	print('soft')
+	print(soft)
 	print('ll')
 	print(ll)
 

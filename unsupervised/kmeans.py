@@ -41,7 +41,7 @@ def kmeans(X, K, init='random', max_iter=100, do_plot=False, to_return=[1, 0, 0]
 		Maximum number of optimization iterations.
 	do_plot : bool (optional)
 		Plot 2D data?
-	to_return : [bool]
+	to_return : [bool] (optional)
 		Array of bools that specifies which values to return. The bool
 		at to_return[0] indicates whether z should be returned; the bool
 		at to_return[1] indicates whether c should be returned, etc.
@@ -166,9 +166,13 @@ if __name__ == '__main__':
 	X,Y = data.load_data_from_csv('../classifier-data.csv', 4, float)
 	X,Y = arr(X), arr(Y)
 
-	z = kmeans(X, 10)
+	z,c,sumd = kmeans(X, 10, to_return=[1,1,1])
 	print('z')
 	print(z)
+	print('c')
+	print(c)
+	print('sumd')
+	print(sumd)
 
 
 ################################################################################

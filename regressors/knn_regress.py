@@ -6,8 +6,12 @@
 import csv
 import math
 import numpy as np
+
+from numpy import asarray as arr
 from numpy import asmatrix as mat
 from regress import Regress
+from utils.data import load_data_from_csv
+from utils.test import test_randomly
 
 
 ################################################################################
@@ -152,78 +156,98 @@ class KNNRegress(Regress):
 
 if __name__ == '__main__':
 
-	data = [[float(val) for val in row[:-1]] for row in csv.reader(open('../regressor-data.csv'))]
-	trd = np.asarray(data[0:40] + data[50:90] + data[100:140])
-	ted = np.asarray(data[40:50] + data[90:100] + data[140:150])
-	trd2 = np.asarray(data[150:180] + data[200:230] + data[250:280])
-	ted2 = np.asarray(data[180:200] + data[230:250] + data[280:300])
-	trd3 = np.asarray(data[300:320] + data[350:370] + data[400:420])
-	ted3 = np.asarray(data[320:350] + data[370:400] + data[420:450])
-	predictions = [float(row[-1].lower()) for row in csv.reader(open('../regressor-data.csv'))]
-	trp = np.asarray(predictions[0:40] + predictions[50:90] + predictions[100:140])
-	tep = np.asarray(predictions[40:50] + predictions[90:100] + predictions[140:150])
-	trp2 = np.asarray(predictions[150:180] + predictions[200:230] + predictions[250:280])
-	tep2 = np.asarray(predictions[180:200] + predictions[230:250] + predictions[280:300])
-	trp3 = np.asarray(predictions[300:320] + predictions[350:370] + predictions[400:420])
-	tep3 = np.asarray(predictions[320:350] + predictions[370:400] + predictions[420:450])
-	
-	print('kr', '\n')
-	kr = KNNRegress(trd, trp, K=5, alpha=1.2)
-	print(kr, '\n')
-	print(kr.predict(ted), '\n')
-	print(kr.mae(ted, tep), '\n')
-	print(kr.mse(ted, tep), '\n')
-	print(kr.rmse(ted, tep), '\n')
+## RANDOM TESTING ##############################################################
 
-	print()
+	data,predictions = load_data_from_csv('../regressor-data.csv', -1, float)
+	data,predictions = arr(data), arr(predictions)
 
-	print('kr', '\n')
-	kr = KNNRegress(trd2, trp2, K=3, alpha=1.6)
-	print(kr, '\n')
-	print(kr.predict(ted2), '\n')
-	print(kr.mae(ted2, tep2), '\n')
-	print(kr.mse(ted2, tep2), '\n')
-	print(kr.rmse(ted2, tep2), '\n')
+	def test(trd, trc, ted, tec):
+		print('knnr', '\n')
+		knnr = KNNRegress(trd, trc)
+		print(knnr, '\n')
+		err = knnr.mae(ted, tec)
+		print(err, '\n')
+		return err
 
-	print()
+	avg_err = test_randomly(data, predictions, 0.8, test)
 
-	print('kr', '\n')
-	kr = KNNRegress(trd3, trp3, K=7, alpha=0.6)
-	print(kr, '\n')
-	print(kr.predict(ted3), '\n')
-	print(kr.mae(ted3, tep3), '\n')
-	print(kr.mse(ted3, tep3), '\n')
-	print(kr.rmse(ted3, tep3), '\n')
+	print('avg_err')
+	print(avg_err)
 
-	print()
+## DETERMINISTIC TESTING #######################################################
 
-	print('kr', '\n')
-	kr = KNNRegress(trd, trp, K=9, alpha=3.2)
-	print(kr, '\n')
-	print(kr.predict(ted2), '\n')
-	print(kr.mae(ted2, tep2), '\n')
-	print(kr.mse(ted2, tep2), '\n')
-	print(kr.rmse(ted2, tep2), '\n')
-
-	print()
-
-	print('kr', '\n')
-	kr = KNNRegress(trd2, trp2, K=11, alpha=2.6)
-	print(kr, '\n')
-	print(kr.predict(ted), '\n')
-	print(kr.mae(ted, tep), '\n')
-	print(kr.mse(ted, tep), '\n')
-	print(kr.rmse(ted, tep), '\n')
-
-	print()
-
-	print('kr', '\n')
-	kr = KNNRegress(trd3, trp3, K=2, alpha=1.7)
-	print(kr, '\n')
-	print(kr.predict(ted2), '\n')
-	print(kr.mae(ted2, tep2), '\n')
-	print(kr.mse(ted2, tep2), '\n')
-	print(kr.rmse(ted2, tep2), '\n')
+#	data = [[float(val) for val in row[:-1]] for row in csv.reader(open('../regressor-data.csv'))]
+#	trd = np.asarray(data[0:40] + data[50:90] + data[100:140])
+#	ted = np.asarray(data[40:50] + data[90:100] + data[140:150])
+#	trd2 = np.asarray(data[150:180] + data[200:230] + data[250:280])
+#	ted2 = np.asarray(data[180:200] + data[230:250] + data[280:300])
+#	trd3 = np.asarray(data[300:320] + data[350:370] + data[400:420])
+#	ted3 = np.asarray(data[320:350] + data[370:400] + data[420:450])
+#	predictions = [float(row[-1].lower()) for row in csv.reader(open('../regressor-data.csv'))]
+#	trp = np.asarray(predictions[0:40] + predictions[50:90] + predictions[100:140])
+#	tep = np.asarray(predictions[40:50] + predictions[90:100] + predictions[140:150])
+#	trp2 = np.asarray(predictions[150:180] + predictions[200:230] + predictions[250:280])
+#	tep2 = np.asarray(predictions[180:200] + predictions[230:250] + predictions[280:300])
+#	trp3 = np.asarray(predictions[300:320] + predictions[350:370] + predictions[400:420])
+#	tep3 = np.asarray(predictions[320:350] + predictions[370:400] + predictions[420:450])
+#	
+#	print('kr', '\n')
+#	kr = KNNRegress(trd, trp, K=5, alpha=1.2)
+#	print(kr, '\n')
+#	print(kr.predict(ted), '\n')
+#	print(kr.mae(ted, tep), '\n')
+#	print(kr.mse(ted, tep), '\n')
+#	print(kr.rmse(ted, tep), '\n')
+#
+#	print()
+#
+#	print('kr', '\n')
+#	kr = KNNRegress(trd2, trp2, K=3, alpha=1.6)
+#	print(kr, '\n')
+#	print(kr.predict(ted2), '\n')
+#	print(kr.mae(ted2, tep2), '\n')
+#	print(kr.mse(ted2, tep2), '\n')
+#	print(kr.rmse(ted2, tep2), '\n')
+#
+#	print()
+#
+#	print('kr', '\n')
+#	kr = KNNRegress(trd3, trp3, K=7, alpha=0.6)
+#	print(kr, '\n')
+#	print(kr.predict(ted3), '\n')
+#	print(kr.mae(ted3, tep3), '\n')
+#	print(kr.mse(ted3, tep3), '\n')
+#	print(kr.rmse(ted3, tep3), '\n')
+#
+#	print()
+#
+#	print('kr', '\n')
+#	kr = KNNRegress(trd, trp, K=9, alpha=3.2)
+#	print(kr, '\n')
+#	print(kr.predict(ted2), '\n')
+#	print(kr.mae(ted2, tep2), '\n')
+#	print(kr.mse(ted2, tep2), '\n')
+#	print(kr.rmse(ted2, tep2), '\n')
+#
+#	print()
+#
+#	print('kr', '\n')
+#	kr = KNNRegress(trd2, trp2, K=11, alpha=2.6)
+#	print(kr, '\n')
+#	print(kr.predict(ted), '\n')
+#	print(kr.mae(ted, tep), '\n')
+#	print(kr.mse(ted, tep), '\n')
+#	print(kr.rmse(ted, tep), '\n')
+#
+#	print()
+#
+#	print('kr', '\n')
+#	kr = KNNRegress(trd3, trp3, K=2, alpha=1.7)
+#	print(kr, '\n')
+#	print(kr.predict(ted2), '\n')
+#	print(kr.mae(ted2, tep2), '\n')
+#	print(kr.mse(ted2, tep2), '\n')
+#	print(kr.rmse(ted2, tep2), '\n')
 
 
 ################################################################################

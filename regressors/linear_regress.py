@@ -89,7 +89,7 @@ class LinearRegress(Regress):
 			N x M numpy array that contains N data points with M features.
 		"""
 		X_te = np.concatenate((np.ones((mat(X).shape[0],1)), X), axis=1)		# extend features by including a constant feature
-		return mat(X_te) * mat(self.theta).T
+		return arr(mat(X_te) * mat(self.theta).T)
 
 
 ## MUTATORS ####################################################################

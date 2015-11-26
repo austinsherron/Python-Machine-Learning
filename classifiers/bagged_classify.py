@@ -251,148 +251,148 @@ if __name__ == '__main__':
 
 ## DETERMINISTIC TESTING #######################################################
 
-	np.set_printoptions(linewidth=200)
-
-	data = [[float(val) for val in row[:-1]] for row in csv.reader(open('../classifier-data.csv'))]
-	trd = np.asarray(data[0:40] + data[50:90] + data[100:140])
-	ted = np.asarray(data[40:50] + data[90:100] + data[140:150])
-	classes = [float(row[-1].lower()) for row in csv.reader(open('../classifier-data.csv'))]
-	trc = np.asarray(classes[0:40] + classes[50:90] + classes[100:140])
-	tec = np.asarray(classes[40:50] + classes[90:100] + classes[140:150])
-
-	btrd = trd[0:80,:]
-	bted = ted[0:20,:]
-	btrc = trc[0:80]
-	btec = tec[0:20]
-
-	btrd2 = trd[40:120,:]
-	bted2 = ted[10:30,:]
-	btrc2 = trc[40:120]
-	btec2 = tec[10:30]
-
-	print('knn_bc', '\n')
-	knn_bc = BaggedClassify(KNNClassify, 20, trd, trc)
-	print(knn_bc, '\n')
-	print(knn_bc.predict(ted), '\n')
-	print(knn_bc.err(ted, tec), '\n')
-	print(knn_bc.confusion(ted, tec), '\n')
-
-	print()
-
-	print('knn_ibc', '\n')
-	knn_ibc = BaggedClassify(KNNClassify, 30, ted, tec)
-	print(knn_ibc, '\n')
-	print(knn_ibc.predict(trd), '\n')
-	print(knn_ibc.err(trd, trc), '\n')
-	print(knn_ibc.confusion(trd, trc), '\n')
-
-	print()
-
-	print('knn_bbc', '\n')
-	knn_bbc = BaggedClassify(KNNClassify, 40, btrd, btrc)
-	print(knn_bbc, '\n')
-	print(knn_bbc.predict(bted), '\n')
-	print(knn_bbc.auc(bted, btec), '\n')
-	print(knn_bbc.err(bted, btec), '\n')
-	print(knn_bbc.confusion(bted, btec), '\n')
-	print(knn_bbc.roc(bted, btec), '\n')
-
-	print()
-
-	print('knn_ibbc', '\n')
-	knn_ibbc = BaggedClassify(KNNClassify, 50, bted, btec)
-	print(knn_ibbc, '\n')
-	print(knn_ibbc.predict(btrd), '\n')
-	print(knn_ibbc.auc(btrd, btrc), '\n')
-	print(knn_ibbc.err(btrd, btrc), '\n')
-	print(knn_ibbc.confusion(btrd, btrc), '\n')
-	print(knn_ibbc.roc(btrd, btrc), '\n')
-
-	print()
-
-	print('knn_bbc2', '\n')
-	knn_bbc2 = BaggedClassify(KNNClassify, 40, btrd2, btrc2)
-	print(knn_bbc2, '\n')
-	print(knn_bbc2.predict(bted2), '\n')
-	print(knn_bbc2.auc(bted2, btec2), '\n')
-	print(knn_bbc2.err(bted2, btec2), '\n')
-	print(knn_bbc2.confusion(bted2, btec2), '\n')
-	print(knn_bbc2.roc(bted2, btec2), '\n')
-
-	print()
-
-	print('knn_ibbc2', '\n')
-	knn_ibbc2 = BaggedClassify(KNNClassify, 50, bted2, btec2)
-	print(knn_ibbc2, '\n')
-	print(knn_ibbc2.predict(btrd2), '\n')
-	print(knn_ibbc2.auc(btrd2, btrc2), '\n')
-	print(knn_ibbc2.err(btrd2, btrc2), '\n')
-	print(knn_ibbc2.confusion(btrd2, btrc2), '\n')
-	print(knn_ibbc2.roc(btrd2, btrc2), '\n')
-
-	print()
-
-	print('dt_bc', '\n')
-	dt_bc = BaggedClassify(TreeClassify, 20, trd, trc)
-	print(dt_bc, '\n')
-	print(dt_bc.predict(ted), '\n')
-	print(dt_bc.err(ted, tec), '\n')
-	print(dt_bc.confusion(ted, tec), '\n')
-
-	print()
-
-	print('dt_ibc', '\n')
-	dt_ibc = BaggedClassify(TreeClassify, 30, ted, tec)
-	print(dt_ibc, '\n')
-	print(dt_ibc.predict(trd), '\n')
-	print(dt_ibc.err(trd, trc), '\n')
-	print(dt_ibc.confusion(trd, trc), '\n')
-
-	print()
-
-	print('dt_bbc', '\n')
-	dt_bbc = BaggedClassify(TreeClassify, 40, btrd, btrc)
-	print(dt_bbc, '\n')
-	print(dt_bbc.predict(bted), '\n')
-	print(dt_bbc.auc(bted, btec), '\n')
-	print(dt_bbc.err(bted, btec), '\n')
-	print(dt_bbc.confusion(bted, btec), '\n')
-	print(dt_bbc.roc(bted, btec), '\n')
-
-	print()
-
-	print('dt_ibbc', '\n')
-	dt_ibbc = BaggedClassify(TreeClassify, 50, bted, btec)
-	print(dt_ibbc, '\n')
-	print(dt_ibbc.predict(btrd), '\n')
-	print(dt_ibbc.auc(btrd, btrc), '\n')
-	print(dt_ibbc.err(btrd, btrc), '\n')
-	print(dt_ibbc.confusion(btrd, btrc), '\n')
-	print(dt_ibbc.roc(btrd, btrc), '\n')
-
-	print()
-
-	print('dt_bbc2', '\n')
-	dt_bbc2 = BaggedClassify(TreeClassify, 40, btrd2, btrc2)
-	print(dt_bbc2, '\n')
-	print(dt_bbc2.predict(bted2), '\n')
-	print(dt_bbc2.auc(bted2, btec2), '\n')
-	print(dt_bbc2.err(bted2, btec2), '\n')
-	print(dt_bbc2.confusion(bted2, btec2), '\n')
-	print(dt_bbc2.roc(bted2, btec2), '\n')
-
-	print()
-
-	print('dt_ibbc2', '\n')
-	dt_ibbc2 = BaggedClassify(TreeClassify, 50, bted2, btec2)
-	print(dt_ibbc2, '\n')
-	print(dt_ibbc2.predict(btrd2), '\n')
-	print(dt_ibbc2.auc(btrd2, btrc2), '\n')
-	print(dt_ibbc2.err(btrd2, btrc2), '\n')
-	print(dt_ibbc2.confusion(btrd2, btrc2), '\n')
-	print(dt_ibbc2.roc(btrd2, btrc2), '\n')
-
-	print()
+#	np.set_printoptions(linewidth=200)
+#
+#	data = [[float(val) for val in row[:-1]] for row in csv.reader(open('../classifier-data.csv'))]
+#	trd = np.asarray(data[0:40] + data[50:90] + data[100:140])
+#	ted = np.asarray(data[40:50] + data[90:100] + data[140:150])
+#	classes = [float(row[-1].lower()) for row in csv.reader(open('../classifier-data.csv'))]
+#	trc = np.asarray(classes[0:40] + classes[50:90] + classes[100:140])
+#	tec = np.asarray(classes[40:50] + classes[90:100] + classes[140:150])
+#
+#	btrd = trd[0:80,:]
+#	bted = ted[0:20,:]
+#	btrc = trc[0:80]
+#	btec = tec[0:20]
+#
+#	btrd2 = trd[40:120,:]
+#	bted2 = ted[10:30,:]
+#	btrc2 = trc[40:120]
+#	btec2 = tec[10:30]
+#
+#	print('knn_bc', '\n')
+#	knn_bc = BaggedClassify(KNNClassify, 20, trd, trc)
+#	print(knn_bc, '\n')
+#	print(knn_bc.predict(ted), '\n')
+#	print(knn_bc.err(ted, tec), '\n')
+#	print(knn_bc.confusion(ted, tec), '\n')
+#
+#	print()
+#
+#	print('knn_ibc', '\n')
+#	knn_ibc = BaggedClassify(KNNClassify, 30, ted, tec)
+#	print(knn_ibc, '\n')
+#	print(knn_ibc.predict(trd), '\n')
+#	print(knn_ibc.err(trd, trc), '\n')
+#	print(knn_ibc.confusion(trd, trc), '\n')
+#
+#	print()
+#
+#	print('knn_bbc', '\n')
+#	knn_bbc = BaggedClassify(KNNClassify, 40, btrd, btrc)
+#	print(knn_bbc, '\n')
+#	print(knn_bbc.predict(bted), '\n')
+#	print(knn_bbc.auc(bted, btec), '\n')
+#	print(knn_bbc.err(bted, btec), '\n')
+#	print(knn_bbc.confusion(bted, btec), '\n')
+#	print(knn_bbc.roc(bted, btec), '\n')
+#
+#	print()
+#
+#	print('knn_ibbc', '\n')
+#	knn_ibbc = BaggedClassify(KNNClassify, 50, bted, btec)
+#	print(knn_ibbc, '\n')
+#	print(knn_ibbc.predict(btrd), '\n')
+#	print(knn_ibbc.auc(btrd, btrc), '\n')
+#	print(knn_ibbc.err(btrd, btrc), '\n')
+#	print(knn_ibbc.confusion(btrd, btrc), '\n')
+#	print(knn_ibbc.roc(btrd, btrc), '\n')
+#
+#	print()
+#
+#	print('knn_bbc2', '\n')
+#	knn_bbc2 = BaggedClassify(KNNClassify, 40, btrd2, btrc2)
+#	print(knn_bbc2, '\n')
+#	print(knn_bbc2.predict(bted2), '\n')
+#	print(knn_bbc2.auc(bted2, btec2), '\n')
+#	print(knn_bbc2.err(bted2, btec2), '\n')
+#	print(knn_bbc2.confusion(bted2, btec2), '\n')
+#	print(knn_bbc2.roc(bted2, btec2), '\n')
+#
+#	print()
+#
+#	print('knn_ibbc2', '\n')
+#	knn_ibbc2 = BaggedClassify(KNNClassify, 50, bted2, btec2)
+#	print(knn_ibbc2, '\n')
+#	print(knn_ibbc2.predict(btrd2), '\n')
+#	print(knn_ibbc2.auc(btrd2, btrc2), '\n')
+#	print(knn_ibbc2.err(btrd2, btrc2), '\n')
+#	print(knn_ibbc2.confusion(btrd2, btrc2), '\n')
+#	print(knn_ibbc2.roc(btrd2, btrc2), '\n')
+#
+#	print()
+#
+#	print('dt_bc', '\n')
+#	dt_bc = BaggedClassify(TreeClassify, 20, trd, trc)
+#	print(dt_bc, '\n')
+#	print(dt_bc.predict(ted), '\n')
+#	print(dt_bc.err(ted, tec), '\n')
+#	print(dt_bc.confusion(ted, tec), '\n')
+#
+#	print()
+#
+#	print('dt_ibc', '\n')
+#	dt_ibc = BaggedClassify(TreeClassify, 30, ted, tec)
+#	print(dt_ibc, '\n')
+#	print(dt_ibc.predict(trd), '\n')
+#	print(dt_ibc.err(trd, trc), '\n')
+#	print(dt_ibc.confusion(trd, trc), '\n')
+#
+#	print()
+#
+#	print('dt_bbc', '\n')
+#	dt_bbc = BaggedClassify(TreeClassify, 40, btrd, btrc)
+#	print(dt_bbc, '\n')
+#	print(dt_bbc.predict(bted), '\n')
+#	print(dt_bbc.auc(bted, btec), '\n')
+#	print(dt_bbc.err(bted, btec), '\n')
+#	print(dt_bbc.confusion(bted, btec), '\n')
+#	print(dt_bbc.roc(bted, btec), '\n')
+#
+#	print()
+#
+#	print('dt_ibbc', '\n')
+#	dt_ibbc = BaggedClassify(TreeClassify, 50, bted, btec)
+#	print(dt_ibbc, '\n')
+#	print(dt_ibbc.predict(btrd), '\n')
+#	print(dt_ibbc.auc(btrd, btrc), '\n')
+#	print(dt_ibbc.err(btrd, btrc), '\n')
+#	print(dt_ibbc.confusion(btrd, btrc), '\n')
+#	print(dt_ibbc.roc(btrd, btrc), '\n')
+#
+#	print()
+#
+#	print('dt_bbc2', '\n')
+#	dt_bbc2 = BaggedClassify(TreeClassify, 40, btrd2, btrc2)
+#	print(dt_bbc2, '\n')
+#	print(dt_bbc2.predict(bted2), '\n')
+#	print(dt_bbc2.auc(bted2, btec2), '\n')
+#	print(dt_bbc2.err(bted2, btec2), '\n')
+#	print(dt_bbc2.confusion(bted2, btec2), '\n')
+#	print(dt_bbc2.roc(bted2, btec2), '\n')
+#
+#	print()
+#
+#	print('dt_ibbc2', '\n')
+#	dt_ibbc2 = BaggedClassify(TreeClassify, 50, bted2, btec2)
+#	print(dt_ibbc2, '\n')
+#	print(dt_ibbc2.predict(btrd2), '\n')
+#	print(dt_ibbc2.auc(btrd2, btrc2), '\n')
+#	print(dt_ibbc2.err(btrd2, btrc2), '\n')
+#	print(dt_ibbc2.confusion(btrd2, btrc2), '\n')
+#	print(dt_ibbc2.roc(btrd2, btrc2), '\n')
+#
+#	print()
 
 
 ################################################################################

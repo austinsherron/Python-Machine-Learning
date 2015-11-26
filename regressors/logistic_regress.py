@@ -13,7 +13,7 @@ from numpy import asarray as arr
 from numpy import atleast_2d as twod
 from numpy import column_stack as cols
 from regress import Regress
-from utils.data import rescale
+from utils.data import load_data_from_csv, rescale, split_data
 
 
 ################################################################################
@@ -118,7 +118,7 @@ class LogisticRegress(Regress):
 				grad = (Y_hat_i - Y[i]) * Y_hat_i * (1 - Y_hat_i) * X_train[i,:]
 				self.wts = self.wts - (stepsize / iter) * grad
 
-			done = (iter > 1 and abs(mse[iter] - mse[iter - 1]) < tolerance) or iter > max_steps
+			done = (iter > 1 and abs(mse[iter] - mse[iter - 1]) < tolerance) or iter >= max_steps
 			iter += 1
 
 		self.wts = arr(self.wts).ravel()
@@ -192,8 +192,12 @@ if __name__ == '__main__':
 	trd,mu,scale = rescale(trd)
 	ted,mu,scale = rescale(ted)
 
-	print(trd)
-	print(ted)
+	X,Y = load_data_from_csv('../slr01.csv', 1, float)
+	Xtr,Xte,Ytr,Yte = split_data(arr(X), arr(Y), .8)
+
+	lr = LogisticRegress(Xtr, Ytr, init='random', tolerance=-np.inf)
+	print(lr.predict(Xte))
+	print(lr.mae(Xte, Yte))
 
 	print('lr', '\n')
 	lr = LogisticRegress(trd, trp)
