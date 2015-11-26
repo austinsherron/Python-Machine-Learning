@@ -28,8 +28,8 @@ All functions/objects include docstrings that specify parameters and return valu
 
 ### Unsupervised Learners (Clustering)
 
-- Hierarchical Agglomerative Clustering (`agglom\_cluster`)
-- Expectation-Maximization Clustering (`em\_cluster`)
+- Hierarchical Agglomerative Clustering (`agglom_cluster`)
+- Expectation-Maximization Clustering (`em_cluster`)
 - K-Means Clustering (`kmeans`)
 
 ### Boosting 
