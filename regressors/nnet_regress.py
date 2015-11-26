@@ -285,14 +285,14 @@ if __name__ == '__main__':
 
 	np.set_printoptions(linewidth=200)
 
-	data = [[float(val) for val in row[:-1]] for row in csv.reader(open('../regressor-data.csv'))]
+	data = [[float(val) for val in row[:-1]] for row in csv.reader(open('../data/regressor-data.csv'))]
 	trd = np.asarray(data[0:40] + data[50:90] + data[100:140])
 	ted = np.asarray(data[40:50] + data[90:100] + data[140:150])
 	trd2 = np.asarray(data[150:180] + data[200:230] + data[250:280])
 	ted2 = np.asarray(data[180:200] + data[230:250] + data[280:300])
 	trd3 = np.asarray(data[300:320] + data[350:370] + data[400:420])
 	ted3 = np.asarray(data[320:350] + data[370:400] + data[420:450])
-	predictions = [float(row[-1].lower()) for row in csv.reader(open('../regressor-data.csv'))]
+	predictions = [float(row[-1].lower()) for row in csv.reader(open('../data/regressor-data.csv'))]
 	trp = np.asarray(predictions[0:40] + predictions[50:90] + predictions[100:140])
 	tep = np.asarray(predictions[40:50] + predictions[90:100] + predictions[140:150])
 	trp2 = np.asarray(predictions[150:180] + predictions[200:230] + predictions[250:280])

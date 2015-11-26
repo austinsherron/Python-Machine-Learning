@@ -173,7 +173,7 @@ class Gradboost(Regress):
 
 if __name__ == '__main__':
 
-	data,predictions = load_data_from_csv('../regressor-data.csv', -1, float)
+	data,predictions = load_data_from_csv('../data/regressor-data.csv', -1, float)
 	data,predictions = arr(data), arr(predictions)
 	data,predictions = bootstrap_data(data, predictions, 150)
 

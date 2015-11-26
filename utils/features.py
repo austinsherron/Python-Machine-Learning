@@ -438,7 +438,7 @@ if __name__ == '__main__':
 
 	np.set_printoptions(linewidth=300, threshold=10000, precision=2)
 
-	data,classes = load_data_from_csv('../classifier-data.csv', 4, float)
+	data,classes = load_data_from_csv('../data/classifier-data.csv', 4, float)
 	data,classes = arr(data), arr(classes)
 
 	X = fpoly_pair(data, 5)

@@ -124,7 +124,7 @@ def test_randomly(data, labels, mix=0.8, test=lambda x: 1.0, *args):
 if __name__ == '__main__':
 
 	pass
-#	data,classes = data.load_data_from_csv('../classifier-data.csv', 4, float)
+#	data,classes = data.load_data_from_csv('../data/classifier-data.csv', 4, float)
 #	data,classes = arr(data), arr(classes)
 #
 #	for i in range(1,6):

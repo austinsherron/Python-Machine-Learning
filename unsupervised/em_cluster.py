@@ -147,7 +147,7 @@ def em_cluster(X, K, init='random', max_iter=100, tol=1e-6, do_plot=False, to_re
 
 if __name__ == '__main__':
 
-	X,Y = data.load_data_from_csv('../classifier-data.csv', 4, float)
+	X,Y = data.load_data_from_csv('../data/classifier-data.csv', 4, float)
 	X,Y = arr(X), arr(Y)
 
 	z,T,soft,ll = em_cluster(X, 5, to_return=[1,1,1,1])

@@ -137,7 +137,7 @@ if __name__ == '__main__':
 
 	np.set_printoptions(linewidth=200, precision=2)
 
-	X,Y = data.load_data_from_csv('../classifier-data.csv', 4, float)
+	X,Y = data.load_data_from_csv('../data/classifier-data.csv', 4, float)
 	X,Y = arr(X), arr(Y)
 
 	z,join = agglom_cluster(X, 5, to_return=[1,1])

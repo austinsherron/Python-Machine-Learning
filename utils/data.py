@@ -431,7 +431,7 @@ def rescale(X, mu=None, scale=None):
 
 if __name__ == '__main__':
 
-	data,classes = load_data_from_csv('../classifier-data.csv', 4, float)
+	data,classes = load_data_from_csv('../data/classifier-data.csv', 4, float)
 	data,classes = arr(data), arr(classes)
 
 #	print('testing bootstrap_data')

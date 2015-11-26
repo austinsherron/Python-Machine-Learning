@@ -248,7 +248,7 @@ if __name__ == '__main__':
 
 ## RANDOM TESTING ##############################################################
 
-	data,classes = load_data_from_csv('../classifier-data.csv', 4, float)
+	data,classes = load_data_from_csv('../data/classifier-data.csv', 4, float)
 	data,classes = arr(data), arr(classes)
 
 	bd1,bc1 = filter_data(data, classes, lambda x,y: y == 2)
@@ -274,10 +274,10 @@ if __name__ == '__main__':
 
 ## DETERMINISTIC TESTING #######################################################
 
-#	data = [[float(val) for val in row[:-1]] for row in csv.reader(open('../classifier-data.csv'))]
+#	data = [[float(val) for val in row[:-1]] for row in csv.reader(open('../data/classifier-data.csv'))]
 #	trd = np.asarray(data[0:40] + data[50:90] + data[100:140])
 #	ted = np.asarray(data[40:50] + data[90:100] + data[140:150])
-#	classes = [float(row[-1].lower()) for row in csv.reader(open('../classifier-data.csv'))]
+#	classes = [float(row[-1].lower()) for row in csv.reader(open('../data/classifier-data.csv'))]
 #	trc = np.asarray(classes[0:40] + classes[50:90] + classes[100:140])
 #	tec = np.asarray(classes[40:50] + classes[90:100] + classes[140:150])
 #

@@ -163,7 +163,7 @@ def k_init(X, K, determ):
 
 if __name__ == '__main__':
 
-	X,Y = data.load_data_from_csv('../classifier-data.csv', 4, float)
+	X,Y = data.load_data_from_csv('../data/classifier-data.csv', 4, float)
 	X,Y = arr(X), arr(Y)
 
 	z,c,sumd = kmeans(X, 10, to_return=[1,1,1])

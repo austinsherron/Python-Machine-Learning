@@ -302,10 +302,10 @@ class LinearClassify(Classify):
 
 if __name__ == '__main__':
 
-	data = [[float(val) for val in row[:-1]] for row in csv.reader(open('../classifier-data.csv'))]
+	data = [[float(val) for val in row[:-1]] for row in csv.reader(open('../data/classifier-data.csv'))]
 	trd = np.asarray(data[0:40] + data[50:90] + data[100:140])
 	ted = np.asarray(data[40:50] + data[90:100] + data[140:150])
-	classes = [float(row[-1].lower()) for row in csv.reader(open('../classifier-data.csv'))]
+	classes = [float(row[-1].lower()) for row in csv.reader(open('../data/classifier-data.csv'))]
 	trc = np.asarray(classes[0:40] + classes[50:90] + classes[100:140])
 	tec = np.asarray(classes[40:50] + classes[90:100] + classes[140:150])
 

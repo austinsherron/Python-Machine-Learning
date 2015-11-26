@@ -4,5 +4,6 @@ classifiers/octave-workspace/*
 regressors/__pycache__/*
 regressors/octave-workspace/*
 utils/__pycache__/*
-octave-workspace/*
-
+*/octave-workspace/*
+*/__pycache__/*
+data/
