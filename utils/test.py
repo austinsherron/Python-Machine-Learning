@@ -68,7 +68,7 @@ def cross_validate(X, Y, n_folds, i_fold):
 	return to_return
 
 
-def test_randomly(data, labels, mix=0.8, test=lambda x: 1.0, *args):
+def test_randomly(data, labels, mix=0.8, end=0, test=lambda x: 1.0, *args):
 	"""
 	Function that performs random tests using data/labels.
 
@@ -82,6 +82,8 @@ def test_randomly(data, labels, mix=0.8, test=lambda x: 1.0, *args):
 	mix : float
 		The percentage of data to use for training (1 - mix = percentage of data
 		used for testing).
+	end : int
+		The number of tests to run.
 	test : function object
 		A function that takes at least four arguments (arrays containing data/labels
 		for testing/training) and performs tests. This function should return an
@@ -95,13 +97,13 @@ def test_randomly(data, labels, mix=0.8, test=lambda x: 1.0, *args):
 		Average error value of all tests performed.
 	"""
 	start = 0
-	end = len(data)
+	end = len(data) if end == 0 else end
 
 	avg_err = 0
 
 	for i in range(start, end):
-		indexes = range(end)
-		train_indexes = random.sample(indexes, int(mix * end))
+		indexes = range(len(data))
+		train_indexes = random.sample(indexes, int(mix * len(data)))
 		test_indexes = list(set(indexes) - set(train_indexes))
 
 		trd,trc = data[train_indexes], labels[train_indexes]

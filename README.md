@@ -2,34 +2,59 @@
 
 These machine learning algorithms have been adapted from
 algorithms written in Matlab by Professor [Alex Ihler](http://www.ics.uci.edu/~ihler/). 
+All functions/objects include docstrings that specify parameters and return values.
 
 ## Contents
 
 ### Classifiers
 
-- BaggedClassify
-- GaussBayesClassify
-- KNNClassify
-- LinearClassify
-- LogisticClassify
-- LogisticMSEClassify
-- NNetClassify (test)
-- TreeClassify
+- Bagged Classifier (`BaggedClassify`)
+- Gauss-Bayes Classifier (`GaussBayesClassify`)
+- K-Nearest Neighbor Classifier (`KNNClassify`)
+- Linear Classifier (`LinearClassify`)
+- Logistic Classifier (`LogisticClassify`)
+- Logistic Mean Squared Error Classifier (`LogisticMSEClassify`)
+- Neural Net Classifier (`NNetClassify`)
+- Decision Tree Classifier (`TreeClassify`)
 
 ### Regressors
 
-- BaggedRegress
-- KNNRegress
-- LinearRegress
-- LogisticRegress (test)
-- NNetRegress (implement)
-- TreeRegress
+- Bagged Regressor (`BaggedRegress`)
+- K-Nearest Neighbor Regressor (`KNNRegress`)
+- Linear Regressor (`LinearRegress`)
+- Logistic Regressor (`LogisticRegress`)
+- Neural Net Regressor (`NNetRegress`)
+- Decision Tree Regressor (`TreeRegress`)
+
+### Unsupervised Learners (Clustering)
+
+- Hierarchical Agglomerative Clustering (`agglom\_cluster`)
+- Expectation-Maximization Clustering (`em\_cluster`)
+- K-Means Clustering (`kmeans`)
 
 ### Boosting 
 
+- Gradient Boosting (`Gradboost`)
+- Adaboost (implement)
+
+### Utilities
+
+#### Data Generation/Manipulation 
+
+- `load_data_from_csv`
+- `filter_data`
+- `bootstrap_data`
+- `data_GMM`
+- `gamrand`
+- `data_gauss`
+- `whiten`
+- `split_data`
+- `shuffle_data`
+- `rescale`
+
 ## Todos
 
-#### General
+### General
 
 * ~~fix `auc/roc` methods~~, retest
 * ~~remove dependency on BaseClassify~~
@@ -43,7 +68,7 @@ algorithms written in Matlab by Professor [Alex Ihler](http://www.ics.uci.edu/~i
 * ~~fix `BaggedClassify.__setitem__`~~	
 * test `logisticMseClassify`
 
-#### Next Steps
+### Next Steps
 
 * ~~finish and test `baggedClassify`~~
 * ~~implement `logisticMseClassify`~~
@@ -55,10 +80,9 @@ algorithms written in Matlab by Professor [Alex Ihler](http://www.ics.uci.edu/~i
 * implement and test `nnetRegress`
 * ~~implement~~ and test `logisticRegress`
 
-#### Low Priority
+### Low Priority
 
 * add Ihler's comments 
-* execute comprehensive tests
 * ensure consistency of doc strings
 * ~~fix indentation in regressors~~
 * arg error checking

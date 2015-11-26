@@ -14,7 +14,7 @@ from numpy import asmatrix as mat
 from numpy import atleast_2d as twod
 from numpy import concatenate as concat
 from numpy import column_stack as cols
-from utils.data import rescale
+from utils.data import bootstrap_data, load_data_from_csv, rescale, split_data
 from utils.utils import from_1_of_k, to_1_of_k
 
 
@@ -117,6 +117,7 @@ class NNetClassify(Classify):
 			
 			# stochastic gradient update (one pass)
 			for i in range(n):
+				print('i =', i)
 				A,Z = self.__responses(self.wts, X[i,:], sig, sig_0)		# compute all layers' responses, then backdrop
 				delta = (Z[L] - Y_tr_k[i,:]) * arr(d_sig_0(Z[L]))			# take derivative of output layer
 
@@ -356,25 +357,37 @@ if __name__ == '__main__':
 
 ## RANDOM TESTING ##############################################################
 
-## DETERMINISTIC TESTING #######################################################
-
-	data = [[float(val) for val in row[:-1]] for row in csv.reader(open('../data/classifier-data.csv'))]
-	trd = np.asarray(data[0:40] + data[50:90] + data[100:140])
-	ted = np.asarray(data[40:50] + data[90:100] + data[140:150])
-	classes = [float(row[-1].lower()) for row in csv.reader(open('../data/classifier-data.csv'))]
-	trc = np.asarray(classes[0:40] + classes[50:90] + classes[100:140])
-	tec = np.asarray(classes[40:50] + classes[90:100] + classes[140:150])
-
-	trd,mu,scale = rescale(trd)
-	ted,mu,scale = rescale(ted)
-
-	print('nc')
-	nc = NNetClassify(trd, trc, [4,5,5,5,3], init='random', max_steps=5000, activation='htangent')
+	X,Y = load_data_from_csv('../data/gauss.csv', 4, float)
+	# X,Y = bootstrap_data(X, Y, 50000)
+	X,mu,scale = rescale(X)
+	Xtr,Xte,Ytr,Yte = split_data(X, Y, .8)
+	
+	nc = NNetClassify(Xtr, Ytr, [4,5,5,5,4], init='random', max_steps=5000, activation='htangent')
 	print(nc.get_weights())
 	print(nc)
-	print(nc.predict(ted))
-	print(nc.predict_soft(ted))
-	print(nc.err(ted, tec))
+	print(nc.predict(Xte))
+	print(nc.predict_soft(Xte))
+	print(nc.err(Xte, Yte))
+
+## DETERMINISTIC TESTING #######################################################
+
+#	data = [[float(val) for val in row[:-1]] for row in csv.reader(open('../data/classifier-data.csv'))]
+#	trd = np.asarray(data[0:40] + data[50:90] + data[100:140])
+#	ted = np.asarray(data[40:50] + data[90:100] + data[140:150])
+#	classes = [float(row[-1].lower()) for row in csv.reader(open('../data/classifier-data.csv'))]
+#	trc = np.asarray(classes[0:40] + classes[50:90] + classes[100:140])
+#	tec = np.asarray(classes[40:50] + classes[90:100] + classes[140:150])
+#
+#	trd,mu,scale = rescale(trd)
+#	ted,mu,scale = rescale(ted)
+#
+#	print('nc')
+#	nc = NNetClassify(trd, trc, [4,5,5,5,3], init='random', max_steps=5000, activation='htangent')
+#	print(nc.get_weights())
+#	print(nc)
+#	print(nc.predict(ted))
+#	print(nc.predict_soft(ted))
+#	print(nc.err(ted, tec))
 
 
 ################################################################################

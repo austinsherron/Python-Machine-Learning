@@ -222,7 +222,7 @@ if __name__ == '__main__':
 
 ## RANDOM TESTING ##############################################################
 
-	data,classes = load_data_from_csv('../data/classifier-data.csv', 4, float)
+	data,classes = load_data_from_csv('../data/gauss.csv', 4, float)
 	data,classes = arr(data), arr(classes)
 
 	bd1,bc1 = filter_data(data, classes, lambda x,y: y == 2)
@@ -241,7 +241,7 @@ if __name__ == '__main__':
 		print(err, '\n')
 		return err
 
-	avg_err = test_randomly(data, classes, 0.8, test)
+	avg_err = test_randomly(data, classes, mix=0.8, end=100, test=test)
 
 	print('avg_err')
 	print(avg_err)
