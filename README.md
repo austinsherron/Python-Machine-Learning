@@ -35,7 +35,7 @@ All functions/objects include docstrings that specify parameters and return valu
 ### Boosting 
 
 - Gradient Boosting (`GradBoost`)
-- Adaboost (implement)
+- Adaptive Boosting (`AdaBoost`)
 
 ### Utilities
 
@@ -51,6 +51,31 @@ All functions/objects include docstrings that specify parameters and return valu
 - `split_data`
 - `shuffle_data`
 - `rescale`
+
+#### Feature Extraction
+
+- `fhash`
+- `fkitchensink`
+- `flda`
+- `fpoly`
+- `fpoly_mono`
+- `fpoly_pair`
+- `fproject`
+- `fsubset`
+- `fsvd`
+
+#### Testing/Learner Validation
+
+- `cross_validate`
+- `test_randomly`
+
+#### Misc. Utilities
+
+- `to_1_of_k`
+- `from_1_of_k`
+- `to_index`
+- `from_index`
+- `optional_return`
 
 ## Todos
 
