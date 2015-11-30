@@ -39,16 +39,23 @@ class AdaBoost(Classify):
 
 	def __init__(self, base, n, X=None, Y=None, *args, **kargs):
 		"""
-		Constructor for AdaBoost (adaptive boosting) object. 
+		Constructor for AdaBoost (adaptive boosting) object for classification. 
 
 		Parameters
 		----------
-		base : regressor object
+		base : class that inherits from Classify
+			Base classifier type used for learning.
 		n : int
+			Number of base classifiers to instantiate, train, and use for
+			predictions.
 		X : numpy array (optional)
+			N x M numpy array of training data.
 		Y : numpy array (optional)
+			1 x N numpy array of class labels.
 		args: mixed (optional)
+			Additional args needed for training.
 		kargs: mixed (optional)
+			Additional keywords args needed for training.
 		"""
 		self.n_ensemble = 0
 		self.ensemble = []
@@ -88,15 +95,16 @@ class AdaBoost(Classify):
 		wts = np.ones((N,1))
 		wts /= wts.sum()											# start with unweighted data
 		for i in range(len(self.ensemble)):
-			y_hat = self.ensemble.predict(X)						# if we already have data...
-			wts *= np.exp(-self.alpha[i] * 2 * (Y == y_hat))		# ...figure out the weights for the training data
+			y_hat = self.ensemble[i].predict(X)						# if we already have data...
+			wts = wts * np.exp(-self.alpha[-1] * 2 * (Y == y_hat))	# ...figure out the weights for the training data
 			wts /= wts.sum()
 
 		for i in range(n_init, n_init + n):
 			self.ensemble.append(base(X, Y, *args, **kargs))		# train ensemble member
 			y_hat = self.ensemble[-1].predict(X)					# make this entry's prediction
-			err = wts.T.dot(y_hat != Y)								# calculate this entry's data weighted error
-			self.alpha.append(.5 * np.log((1 - err) / err))			# calculate this entry's weight
+			err = wts.T.dot(y_hat != twod(Y).T).flatten()[0]		# calculate this entry's data weighted error
+			# calculate this entry's weight
+			self.alpha.append(.5 * np.log((1 - err) / (err + 1e-64)))
 			wts = wts * np.exp(-self.alpha[-1] * 2 * (Y == y_hat))	# calculate the new resulting data weights
 			wts /= wts.sum()										# normalize them to sum to 1
 			self.n_ensemble += 1 
@@ -107,7 +115,9 @@ class AdaBoost(Classify):
 		Predict on X. See constructor docstring for argument description.
 		"""
 		# get ensemble response and threshold it
-		return (self.predict_soft(X) > 0).astype(int)
+		y_hat = (self.predict_soft(X) > 0).astype(int)
+		y_hat[y_hat == 0] = -1
+		return y_hat
 
 
 	def predict_soft(self, X):
@@ -122,11 +132,46 @@ class AdaBoost(Classify):
 			# ...make a prediction (using -1/+1 convention)
 			pred = cols((pred, 2 * l.predict(X) - 1))
 		pred = pred[:,1:]
-		print(self.alpha)
 		return pred * self.alpha						# return un-thresholded value
 
 
+	def exp_loss(self, X, Y):
+		"""
+		Calculate the exponential loss function.  See constructor docstring for
+		argument descriptions.
+		"""
+		y_hat = self.predict_soft(X)
+		e = (2 * Y - 1).dot(y_hat) / len(Y)				# use mean rather than sum
+		e = np.exp(-e)				
+		return e
+
+
 ## MUTATORS ####################################################################
+
+
+	def clear_ensemble(self):
+		"""
+		Clear ensemble of learners.
+		"""
+		self.n_ensemble = 0
+		self.ensemble = []
+
+
+	def component(self, i):
+		"""
+		Access the component learner at index i.  See __getitem__.
+
+		Parameters
+		----------
+		i : int
+			Index of component learner to be accessed.
+
+		Returns
+		-------
+		classifier object
+			Trained component classifier at index i.
+		"""
+		return self[i]
 
 
 ## INSPECTORS ##################################################################
@@ -179,19 +224,21 @@ if __name__ == '__main__':
 	data,predictions = arr(data), arr(predictions)
 	data,predictions = bootstrap_data(data, predictions, 150)
 
-	# bases = [GaussBayesClassify, KNNClassify, LinearClassify]
-	# bases += [LogisticClassify, TreeClassify]
-	bases = [TreeClassify]
+	bases = [GaussBayesClassify, KNNClassify, TreeClassify]
 
 	def test(trd, trc, ted, tec):
-		print('ab', '\n')
-		ab = AdaBoost(bases[np.random.randint(len(bases))], 20, trd, trc)
-		print(ab, '\n')
-		err = ab.err(ted, tec)
-		print('err =', err, '\n')
-		return err
+		base = bases[np.random.randint(len(bases))]
+		ab = AdaBoost(base, 10, trd, trc)
 
-	avg_err = test_randomly(data, predictions, 0.8, test=test, end=1)
+		print('ab', '\n')
+		print(ab)
+
+		exp_loss = ab.exp_loss(ted, tec)
+		print('exp_loss =', exp_loss)
+
+		return exp_loss
+
+	avg_err = test_randomly(data, predictions, 0.8, test=test, end=5)
 
 	print('avg_err')
 	print(avg_err)
