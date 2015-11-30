@@ -151,6 +151,7 @@ def data_GMM(N, C, D=2, get_Z=False):
 
 	TODO: test more
 	"""
+	C += 1
 	pi = np.zeros(C)
 	for c in range(C):
 		pi[c] = gamrand(10, 0.5)
@@ -165,7 +166,7 @@ def data_GMM(N, C, D=2, get_Z=False):
 	mu = mat(np.random.randn(c, D)) * mat(rho)
 
 	ccov = []
-	for i in range(C + 1):
+	for i in range(C):
 		tmp = np.random.rand(D, D)
 		tmp = tmp + tmp.T
 		tmp = 0.5 * (tmp + D * np.eye(D))
@@ -531,14 +532,11 @@ if __name__ == '__main__':
 #	print('Y')
 #	print(Y)
 #
-	X,Y = data_GMM(100000, 5, D=4, get_Z=True)
+	X,Y = data_GMM(1000, 2, D=4, get_Z=True)
 	
-	with open('../data/gauss.csv', 'w') as f:
+	with open('../data/binary.csv', 'w') as f:
 		w = writer(f)
-		i = 1
 		for x,y in zip(X,Y):
-			print(i)
-			i += 1
 			w.writerow(list(x) + [y])
 
 

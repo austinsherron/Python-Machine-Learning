@@ -34,7 +34,7 @@ All functions/objects include docstrings that specify parameters and return valu
 
 ### Boosting 
 
-- Gradient Boosting (`Gradboost`)
+- Gradient Boosting (`GradBoost`)
 - Adaboost (implement)
 
 ### Utilities

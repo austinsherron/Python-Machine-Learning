@@ -117,7 +117,6 @@ class NNetClassify(Classify):
 			
 			# stochastic gradient update (one pass)
 			for i in range(n):
-				print('i =', i)
 				A,Z = self.__responses(self.wts, X[i,:], sig, sig_0)		# compute all layers' responses, then backdrop
 				delta = (Z[L] - Y_tr_k[i,:]) * arr(d_sig_0(Z[L]))			# take derivative of output layer
 
@@ -173,8 +172,6 @@ class NNetClassify(Classify):
 		"""
 		Y_hat = self.predict(X)
 		return np.mean(Y_hat != from_1_of_k(Y))
-
-
 	def log_likelihood(self, X, Y):
 		"""
 		Compute the emperical avg. log likelihood of 'obj' on test data (X,Y).
@@ -359,7 +356,7 @@ if __name__ == '__main__':
 
 	X,Y = load_data_from_csv('../data/gauss.csv', 4, float)
 	# X,Y = bootstrap_data(X, Y, 50000)
-	X,mu,scale = rescale(X)
+	# X,mu,scale = rescale(X)
 	Xtr,Xte,Ytr,Yte = split_data(X, Y, .8)
 	
 	nc = NNetClassify(Xtr, Ytr, [4,5,5,5,4], init='random', max_steps=5000, activation='htangent')

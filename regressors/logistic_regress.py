@@ -192,7 +192,9 @@ if __name__ == '__main__':
 	trd,mu,scale = rescale(trd)
 	ted,mu,scale = rescale(ted)
 
-	X,Y = load_data_from_csv('../data/slr01.csv', 1, float)
+	X,Y = load_data_from_csv('../data/gauss.csv', 1, float)
+	X,mu,scale = rescale(X)
+	Y,mu,scale = rescale(Y)
 	Xtr,Xte,Ytr,Yte = split_data(arr(X), arr(Y), .8)
 
 	lr = LogisticRegress(Xtr, Ytr, init='random', tolerance=-np.inf)
