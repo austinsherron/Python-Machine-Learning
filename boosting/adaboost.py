@@ -157,6 +157,9 @@ class AdaBoost(Classify):
 		self.ensemble = []
 
 
+## INSPECTORS ##################################################################
+
+
 	def component(self, i):
 		"""
 		Access the component learner at index i.  See __getitem__.
@@ -172,9 +175,6 @@ class AdaBoost(Classify):
 			Trained component classifier at index i.
 		"""
 		return self[i]
-
-
-## INSPECTORS ##################################################################
 
 
 	def __iter__(self):
@@ -227,16 +227,31 @@ if __name__ == '__main__':
 	bases = [GaussBayesClassify, KNNClassify, TreeClassify]
 
 	def test(trd, trc, ted, tec):
+		X1,Y1 = bootstrap_data(trd, trc, round(len(trd) * .5))
+		X2,Y2 = bootstrap_data(trd, trc, round(len(trd) * .5))
+
 		base = bases[np.random.randint(len(bases))]
-		ab = AdaBoost(base, 10, trd, trc)
+
+		ab = AdaBoost(base, 10, X1, Y1)
 
 		print('ab', '\n')
 		print(ab)
 
-		exp_loss = ab.exp_loss(ted, tec)
-		print('exp_loss =', exp_loss)
+		err = ab.err(ted, tec)
+		print('err =', err)
 
-		return exp_loss
+		print('ab.n_ensemble')
+		print(ab.n_ensemble)
+
+		ab.train(base, 7, X2, Y2)
+
+		print('ab.n_ensemble')
+		print(ab.n_ensemble)
+
+		err = ab.err(ted, tec)
+		print('err =', err)
+
+		return err
 
 	avg_err = test_randomly(data, predictions, 0.8, test=test, end=5)
 

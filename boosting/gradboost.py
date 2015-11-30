@@ -42,12 +42,19 @@ class GradBoost(Regress):
 
 		Parameters
 		----------
-		base : regressor object
+		base : class that inherits from Regress
+			Base regressor type used for learning.
 		n : int
+			Number of base regressors to instantiate, train, and use for
+			predictions.
 		X : numpy array (optional)
+			N x M numpy array of training data.
 		Y : numpy array (optional)
+			1 x N numpy array of prediction values.
 		args: mixed (optional)
+			Additional args needed for training.
 		kargs: mixed (optional)
+			Additional keywords args needed for training.
 		"""
 		self.ensemble = []
 		self.alpha = []
@@ -56,8 +63,6 @@ class GradBoost(Regress):
 		
 		self.base = base
 
-		print('base =', base)
-		
 		if type(X) is np.ndarray and type(Y) is np.ndarray:
 			self.train(base, n, X, Y, *args, **kargs)
 
@@ -96,18 +101,14 @@ class GradBoost(Regress):
 			y_hat += (self.alpha[i] * yi)						# training data
 
 		for i in range(n_init, n_init + n):
-			print('i =', i)
-			print('Y =', Y)
-			print('y_hat =', y_hat)
-			Ri = Y - y_hat										# compute residuals (specialized to quadratic loss)
-			print('Ri =', Ri)
+			Ri = (Y - y_hat) + 1e-64							# compute residuals (specialized to quadratic loss)
 			self.ensemble.append(base(X, Ri, *args, **kargs))	# fit a model to the gradient residual
 			yi = self[-1].predict(X)
 			# minimize loss over alpha (specialized to quadratic loss)
 			min_loss = step * np.divide((Ri.dot(yi)), (twod(yi).T.dot(yi)))
-			self.alpha.append(min_loss)
+			self.alpha.append(min_loss.flatten()[0])			 
 			y_hat = (twod(y_hat).T + self.alpha[-1] * yi).flatten()
-			self.n_use = i
+			self.n_use += 1
 
 
 	def predict(self, X):
@@ -125,14 +126,62 @@ class GradBoost(Regress):
 		return Y_te
 
 
-	def predict_soft(self):
-		pass
-
-
 ## MUTATORS ####################################################################
 
 
+	def clear_ensemble(self):
+		"""
+		Clear ensemble of learners.
+		"""
+		self.ensemble = []
+		self.n_use = 0
+
+
+	def set_n(self, n):
+		"""
+		Set the current number of predictors in the ensemble.
+
+		Parameters
+		----------
+		n : int
+			The new number of predictors.
+		"""
+		if type(n) is not int:
+			raise TypeError('GradBoost.set_n: \'n\' (' + n + ') must be of type int')
+
+		self.n_use = n
+
+
 ## INSPECTORS ##################################################################
+
+
+	def component(self, i):
+		"""
+		Access the component learner at index i.  See __getitem__.
+
+		Parameters
+		----------
+		i : int
+			Index of component learner to be accessed.
+
+		Returns
+		-------
+		classifier object
+			Trained component classifier at index i.
+		"""
+		return self[i]
+
+
+	def get_n(self):
+		"""
+		Get the current number of predictors in the ensemble.
+
+		Returns
+		-------
+		self.n_use : int
+			Number of predictors in the ensemble.
+		"""
+		return self.n_use
 
 
 	def __iter__(self):
@@ -175,20 +224,44 @@ if __name__ == '__main__':
 
 	data,predictions = load_data_from_csv('../data/regressor-data.csv', -1, float)
 	data,predictions = arr(data), arr(predictions)
-	data,predictions = bootstrap_data(data, predictions, 150)
+	data,predictions = bootstrap_data(data, predictions, 1000)
 
 	# bases = [LinearRegress, LogisticRegress, KNNRegress, TreeRegress]
 	bases = [KNNRegress]
 
 	def test(trd, trc, ted, tec):
+		X1,Y1 = bootstrap_data(trd, trc, round(len(trd) * .5))
+		X2,Y2 = bootstrap_data(trd, trc, round(len(trd) * .5))
+
+		base = bases[np.random.randint(len(bases))]
+		gd = GradBoost(base, 10, X1, Y1)
+
 		print('gd', '\n')
-		gd = GradBoost(bases[np.random.randint(len(bases))], 20, trd, trc)
 		print(gd, '\n')
+
 		err = gd.mse(ted, tec)
-		print('err =', err, '\n')
+		print('gd.mse =', err, '\n')
+
+		print('gd.predict(ted)')
+		print(gd.predict(ted))
+
+		print('gd.get_n()')
+		print(gd.get_n())
+
+		gd.train(base, 6, X2, Y2)
+
+		print('gd.get_n()')
+		print(gd.get_n())
+
+		err = gd.mse(ted, tec)
+		print('gd.mse =', err, '\n')
+
+		print('gd.predict(ted)')
+		print(gd.predict(ted))
+
 		return err
 
-	avg_err = test_randomly(data, predictions, 0.8, test)
+	avg_err = test_randomly(data, predictions, 0.8, test=test, end=1)
 
 	print('avg_err')
 	print(avg_err)
@@ -196,4 +269,4 @@ if __name__ == '__main__':
 
 ################################################################################
 ################################################################################
-################################################################################
+###############################################################################
