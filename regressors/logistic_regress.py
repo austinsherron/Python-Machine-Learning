@@ -13,7 +13,8 @@ from numpy import asarray as arr
 from numpy import atleast_2d as twod
 from numpy import column_stack as cols
 from regress import Regress
-from utils.data import load_data_from_csv, rescale, split_data
+from utils.data import bootstrap_data, load_data_from_csv, rescale, split_data
+from utils.test import test_randomly
 
 
 ################################################################################
@@ -171,43 +172,73 @@ if __name__ == '__main__':
 
 ## RANDOM TESTING ##############################################################
 
+	X,Y = load_data_from_csv('../data/binary.csv', -1, float)
+	X,Y = bootstrap_data(X, Y, 100)
+	Y[Y == -1] = 0
+	print(Y)
+
+	def test(trd, trc, ted, tec):
+		lr = LogisticRegress(trd, trc)
+
+		print('lr')
+		print(lr)
+
+		print('lr.predict(ted)')
+		print(lr.predict(ted))
+
+		err = lr.mse(ted, tec)
+		print('lr.mse(ted, tec) =', err)
+
+		err = lr.mae(ted, tec)
+		print('lr.mae(ted, tec) =', err)
+
+		err = lr.rmse(ted, tec)
+		print('lr.rmse(ted, tec) =', err)
+
+		return err
+
+	avg_err = test_randomly(X, Y, 0.8, test=test, end=100)
+
+	print('avg_err')
+	print(avg_err)
+
 ## DETERMINISTIC TESTING #######################################################
 
-	data = [[float(val) for val in row[:-1]] for row in csv.reader(open('../data/regressor-data.csv'))]
-	trd = np.asarray(data[0:40] + data[50:90] + data[100:140])
-	ted = np.asarray(data[40:50] + data[90:100] + data[140:150])
-	trd2 = np.asarray(data[150:180] + data[200:230] + data[250:280])
-	ted2 = np.asarray(data[180:200] + data[230:250] + data[280:300])
-	trd3 = np.asarray(data[300:320] + data[350:370] + data[400:420])
-	ted3 = np.asarray(data[320:350] + data[370:400] + data[420:450])
-
-	predictions = [float(row[-1].lower()) for row in csv.reader(open('../data/regressor-data.csv'))]
-	trp = np.asarray(predictions[0:40] + predictions[50:90] + predictions[100:140])
-	tep = np.asarray(predictions[40:50] + predictions[90:100] + predictions[140:150])
-	trp2 = np.asarray(predictions[150:180] + predictions[200:230] + predictions[250:280])
-	tep2 = np.asarray(predictions[180:200] + predictions[230:250] + predictions[280:300])
-	trp3 = np.asarray(predictions[300:320] + predictions[350:370] + predictions[400:420])
-	tep3 = np.asarray(predictions[320:350] + predictions[370:400] + predictions[420:450])
-
-	trd,mu,scale = rescale(trd)
-	ted,mu,scale = rescale(ted)
-
-	X,Y = load_data_from_csv('../data/gauss.csv', 1, float)
-	X,mu,scale = rescale(X)
-	Y,mu,scale = rescale(Y)
-	Xtr,Xte,Ytr,Yte = split_data(arr(X), arr(Y), .8)
-
-	lr = LogisticRegress(Xtr, Ytr, init='random', tolerance=-np.inf)
-	print(lr.predict(Xte))
-	print(lr.mae(Xte, Yte))
-
-	print('lr', '\n')
-	lr = LogisticRegress(trd, trp)
-	print(lr, '\n')
-	print(lr.predict(ted), '\n')
-	print(lr.mae(ted, tep), '\n')
-	print(lr.mse(ted, tep), '\n')
-	print(lr.rmse(ted, tep), '\n')
+#	data = [[float(val) for val in row[:-1]] for row in csv.reader(open('../data/regressor-data.csv'))]
+#	trd = np.asarray(data[0:40] + data[50:90] + data[100:140])
+#	ted = np.asarray(data[40:50] + data[90:100] + data[140:150])
+#	trd2 = np.asarray(data[150:180] + data[200:230] + data[250:280])
+#	ted2 = np.asarray(data[180:200] + data[230:250] + data[280:300])
+#	trd3 = np.asarray(data[300:320] + data[350:370] + data[400:420])
+#	ted3 = np.asarray(data[320:350] + data[370:400] + data[420:450])
+#
+#	predictions = [float(row[-1].lower()) for row in csv.reader(open('../data/regressor-data.csv'))]
+#	trp = np.asarray(predictions[0:40] + predictions[50:90] + predictions[100:140])
+#	tep = np.asarray(predictions[40:50] + predictions[90:100] + predictions[140:150])
+#	trp2 = np.asarray(predictions[150:180] + predictions[200:230] + predictions[250:280])
+#	tep2 = np.asarray(predictions[180:200] + predictions[230:250] + predictions[280:300])
+#	trp3 = np.asarray(predictions[300:320] + predictions[350:370] + predictions[400:420])
+#	tep3 = np.asarray(predictions[320:350] + predictions[370:400] + predictions[420:450])
+#
+#	trd,mu,scale = rescale(trd)
+#	ted,mu,scale = rescale(ted)
+#
+#	X,Y = load_data_from_csv('../data/gauss.csv', 1, float)
+#	X,mu,scale = rescale(X)
+#	Y,mu,scale = rescale(Y)
+#	Xtr,Xte,Ytr,Yte = split_data(arr(X), arr(Y), .8)
+#
+#	lr = LogisticRegress(Xtr, Ytr, init='random', tolerance=-np.inf)
+#	print(lr.predict(Xte))
+#	print(lr.mae(Xte, Yte))
+#
+#	print('lr', '\n')
+#	lr = LogisticRegress(trd, trp)
+#	print(lr, '\n')
+#	print(lr.predict(ted), '\n')
+#	print(lr.mae(ted, tep), '\n')
+#	print(lr.mse(ted, tep), '\n')
+#	print(lr.rmse(ted, tep), '\n')
 
 
 ################################################################################
