@@ -532,7 +532,7 @@ if __name__ == '__main__':
 #	print('Y')
 #	print(Y)
 #
-	X,Y = data_GMM(1000, 2, D=4, get_Z=True)
+	X,Y = data_GMM(100000, 2, D=4, get_Z=True)
 	
 	with open('../data/binary.csv', 'w') as f:
 		w = writer(f)

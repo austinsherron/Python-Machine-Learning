@@ -354,12 +354,12 @@ if __name__ == '__main__':
 
 ## RANDOM TESTING ##############################################################
 
-	X,Y = load_data_from_csv('../data/gauss.csv', 4, float)
-	X,Y = bootstrap_data(X, Y, 100000)
+	X,Y = load_data_from_csv('../data/binary.csv', 4, float)
+	X,Y = bootstrap_data(X, Y, 1000)
 	# X,mu,scale = rescale(X)
 	Xtr,Xte,Ytr,Yte = split_data(X, Y, .8)
 	
-	nc = NNetClassify(Xtr, Ytr, [4,5,5,5,5,5,5,5,4], init='random', max_steps=5000, activation='htangent')
+	nc = NNetClassify(Xtr, Ytr, [4,2,3,2], init='random', max_steps=5000, activation='htangent')
 	print(nc.get_weights())
 	print(nc)
 	print(nc.predict(Xte))
