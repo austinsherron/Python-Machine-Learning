@@ -88,7 +88,7 @@ All functions/objects include docstrings that specify parameters and return valu
 - test `TreeClassify`training options 
 - ~~change `range` to `permutation` (`grep 'np.random.permutation\*'`) and retest~~
 - add plotting 
-- fix `LogisticRegress`
+- ~~fix `LogisticRegress`~~
 - ~~fix `BaggedClassify` train method~~
 - ~~fix `BaggedClassify.__setitem__`~~	
 - test `logisticMseClassify`
@@ -97,7 +97,7 @@ All functions/objects include docstrings that specify parameters and return valu
 
 - ~~finish and test `baggedClassify`~~
 - ~~implement `logisticMseClassify`~~
-- implement and test `nnetClassify`
+- ~~implement and test `nnetClassify`~~
 - ~~implement and test `knnRegress`~~
 - ~~implement and test `linearRegress`~~
 - ~~implement and test `treeRegress`~~
@@ -106,7 +106,7 @@ All functions/objects include docstrings that specify parameters and return valu
 - ~~implement and test `logisticRegress`~~
 - add plotting
 - finish helpers
-- add Ihler's comments 
+- ~~add Ihler's comments~~
 
 ### Low Priority
 
